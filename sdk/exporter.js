@@ -3,7 +3,7 @@ export const exporter = (spanData)=>{
         method : 'POST',
        headers :{
          'Content-type' : 'application/json',
-         'x-project-id' : 'test-project-nigga'
+         'x-project-id' : 'test-project-123'
        },
        body : JSON.stringify(spanData)
     })

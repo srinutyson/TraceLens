@@ -1,0 +1,26 @@
+import { Link } from "react-router-dom";
+
+
+
+function Trace({id , name}){
+     return (
+         
+           <tr>
+              <td>
+                 {id}
+            
+              </td>
+              <td>
+                {name}
+              </td>
+              <td>
+                <Link to = {`/traces/${id}`}>
+                  view Trace
+                </Link>
+              </td>
+           </tr>
+
+
+     )
+};
+export default Trace;

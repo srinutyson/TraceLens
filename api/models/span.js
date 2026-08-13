@@ -67,7 +67,7 @@ import mongoose, { Mongoose } from 'mongoose'
           default : 0
        }
    },
-   const :{
+   cost :{
       type : Number , default : 0
    },
    projectId :{

@@ -1,6 +1,6 @@
 import Span from "../models/span.js";
 import Trace from "../models/trace.js";
-export const ingestSpan = async (req,res)=>{
+ const ingestSpan = async (req,res)=>{
 
    try {
     const  spanData = req.body;
@@ -24,7 +24,7 @@ export const ingestSpan = async (req,res)=>{
         $setOnInsert : {
             traceId : spanData.traceId,
             projectId : projectId,
-            status : 'success',
+            // status : 'success',
             // name : isRoot ? spanData.name : 'Untitled Trace'
         }
 
@@ -34,6 +34,9 @@ export const ingestSpan = async (req,res)=>{
 
     if(spanData.status === 'error'){
          updatequery.$set.status = 'error';
+    }
+    else {
+        updatequery.$set.status = 'success';
     }
 
     if(isRoot){
@@ -82,3 +85,5 @@ catch(error){
 }
 
 } 
+
+export default ingestSpan

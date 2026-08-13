@@ -1,5 +1,5 @@
 import express from 'express';
-import { ingestSpan } from '../controllers/ingestController.js';
+import  ingestSpan from '../controllers/ingestController.js';
 import { getTraces,getTracesById } from '../controllers/traceController.js';
 import { protectAuth } from '../middleware/protectAuth.js';
 const router = express.Router();
