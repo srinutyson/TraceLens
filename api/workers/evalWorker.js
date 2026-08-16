@@ -104,7 +104,7 @@ async function processEvaluation(claimedEval){
       
 }
 
-async function startEvalWorker(){
+export async function startEvalWorker(){
       let count = 0;
     while(true){
          try{

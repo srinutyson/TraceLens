@@ -3,12 +3,13 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import 'dotenv/config';
 import router from './routes/Routes.js';
+import { startEvalWorker } from './workers/evalWorker.js';
 const PORT = process.env.PORT || 4000;
 const app = express();
 app.use(express.json());
 app.use(cors());
 mongoose.connect('mongodb://localhost:27017/tracelens');
-
+startEvalWorker();
 app.use('/api',router);
 
 
