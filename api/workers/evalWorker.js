@@ -8,9 +8,7 @@ import "dotenv/config";
 
 await mongoose.connect(process.env.MONGODB_URI);
 
-const result = await claimWork();
-
-console.log(result);
+await startEvalWorker();
 
 await mongoose.disconnect();
 async function completeEvaluation(claimedEval , evaluation) {
@@ -48,7 +46,7 @@ async function failEvaluation(claimedEval , error){
 async function claimWork(){
     const now = new Date();
     const staleTime = new Date(now.getTime() - 5 * 60 * 1000);
-    console.log("DB:", mongoose.connection.name);
+  
 
     const pending = await Eval.find({ status: "pending" });
     console.log("Pending evals:", pending);
@@ -104,6 +102,23 @@ async function processEvaluation(claimedEval){
      return evaluation;
     
       
+}
+
+async function startEvalWorker(){
+      let count = 0;
+    while(true){
+         try{
+
+          const result =   await claimWork();
+          console.log(result , count);
+          count++;
+         }
+         catch(error){
+            console.error("Evaluation worker error: " , error);
+         }
+         await new Promise(resolve=> setTimeout(resolve,5000));
+
+    }
 }
 
 
