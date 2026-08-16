@@ -8,13 +8,19 @@ const PORT = process.env.PORT || 4000;
 const app = express();
 app.use(express.json());
 app.use(cors());
-mongoose.connect('mongodb://localhost:27017/tracelens');
-startEvalWorker();
-app.use('/api',router);
 
+app.use('/api', router);
 
+async function startServer() {
+    await mongoose.connect('mongodb://localhost:27017/tracelens');
 
+    console.log('MongoDB connected');
 
-app.listen(PORT,()=>{
-     console.log(`Server runnig on port ${PORT}`)
-})
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+
+    startEvalWorker();
+}
+
+startServer();

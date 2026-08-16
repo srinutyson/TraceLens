@@ -6,11 +6,6 @@ import  {llmEvaluator} from '../evalModels/llmEvaluator.js'
 import mongoose from "mongoose";
 import "dotenv/config";
 
-await mongoose.connect(process.env.MONGODB_URI);
-
-await startEvalWorker();
-
-await mongoose.disconnect();
 async function completeEvaluation(claimedEval , evaluation) {
     return await Eval.findOneAndUpdate({
            evalId : claimedEval.evalId

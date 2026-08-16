@@ -24,7 +24,7 @@ export const getTracesById = async(req,res) =>{
            traceId : traceId,
            projectId : projectId
         }) . sort({startTime : 1});
-        const evals = await Eval.findOne({traceId : traceId , projectId : projectId});
+        const evals = await Eval.find({traceId : traceId , projectId : projectId});
          res.status(200).json({
             trace,
             spans,
