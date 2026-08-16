@@ -1,5 +1,5 @@
-import Eval from "../models/eval";
-import Trace from "../models/trace";
+import Eval from "../models/eval.js";
+import Trace from "../models/trace.js";
 import { randomUUID } from "node:crypto";
 const evalIngestion = async (req,res)=>{
         try{

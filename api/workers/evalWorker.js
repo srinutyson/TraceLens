@@ -3,7 +3,16 @@ import Trace from '../models/trace.js';
 import Span from '../models/span.js';
 import  {ruleEvaluator} from '../evalModels/ruleEvaluator.js';
 import  {llmEvaluator} from '../evalModels/llmEvaluator.js'
+import mongoose from "mongoose";
+import "dotenv/config";
 
+await mongoose.connect(process.env.MONGODB_URI);
+
+const result = await claimWork();
+
+console.log(result);
+
+await mongoose.disconnect();
 async function completeEvaluation(claimedEval , evaluation) {
     return await Eval.findOneAndUpdate({
            evalId : claimedEval.evalId
@@ -16,7 +25,7 @@ async function completeEvaluation(claimedEval , evaluation) {
               lockedAt : null
         }
      },{
-        new : true
+         returnDocument: "after" 
      });
 }
 
@@ -32,13 +41,17 @@ async function failEvaluation(claimedEval , error){
                 lockedAt : null
             }
           },
-          {new : true}
+          { returnDocument: "after" }
      );
 }
 
 async function claimWork(){
     const now = new Date();
     const staleTime = new Date(now.getTime() - 5 * 60 * 1000);
+    console.log("DB:", mongoose.connection.name);
+
+    const pending = await Eval.find({ status: "pending" });
+    console.log("Pending evals:", pending);
     const workEval = await Eval.findOneAndUpdate({
           $or : [
                  {status : "pending"},
@@ -54,7 +67,7 @@ async function claimWork(){
             lockedAt : now
         }
        },{
-        new : true
+         returnDocument: "after" 
        }
         );
         if(!workEval) return null;
@@ -92,3 +105,6 @@ async function processEvaluation(claimedEval){
     
       
 }
+
+
+
