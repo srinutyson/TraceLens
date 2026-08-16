@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const evalSchema = new mongoose.Schema({
-    evalid : {
+    evalId : {
         type : String,
         required : true,
         unique : true
@@ -11,26 +11,28 @@ const evalSchema = new mongoose.Schema({
          required : true,
          index : true,
     },
-    scoredType :{
+    evaluationType :{
         type : String , 
         enum : ['rule_based' , 'llm_judge'],
         required : true 
     },
     score : {
-         type : Number,
-         required : true 
+         type : Number
     },
     reasoning : {
-         type : String
+         type : mongoose.Schema.Types.Mixed
     },
     status : {
         type : String,
-        enum : ['pending', 'completed' , 'failed'],
+        enum : ['pending', 'completed' , 'failed','scoring'],
         default : 'pending'
     },
     projectId :{
         type : String,
         required : true
+    },
+    lockedAt :{
+        type : Date
     }
    
 },{timestamps : true});
