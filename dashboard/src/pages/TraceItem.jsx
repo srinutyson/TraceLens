@@ -7,11 +7,11 @@ function Trace({id , name}){
          
            <tr>
               <td>
+                {name}
+              </td>
+               <td>
                  {id}
             
-              </td>
-              <td>
-                {name}
               </td>
               <td>
                 <Link to = {`/traces/${id}`}>

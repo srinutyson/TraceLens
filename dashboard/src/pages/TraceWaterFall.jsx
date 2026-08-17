@@ -55,7 +55,7 @@ import { useState,useEffect } from "react";
                 const response = await fetch(`http://localhost:4000/api/traces/${traceId}`,{
                      headers :{
                         "Content-Type" : "application/json",
-                        "x-project-id" : "test-project-123"
+                        "x-project-id" : "test-project"
                      }
                 });
 

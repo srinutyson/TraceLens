@@ -13,7 +13,7 @@ import  Trace  from "./TraceItem.jsx";
                 const response = await fetch("http://localhost:4000/api/traces",{
             headers : {
                "Content-Type" : "application/json",
-               "x-project-id" : "test-project-123"
+               "x-project-id" : "test-project"
             }
         });
          const data = await response.json();
@@ -37,8 +37,9 @@ import  Trace  from "./TraceItem.jsx";
                 <table>
                     <thead>
                         <tr>
+                       <th>NAME</th>
                         <th>ID</th>
-                        <th>NAME</th>
+                        
                         </tr>
                     </thead>
 
