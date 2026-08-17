@@ -86,9 +86,12 @@ import { useState,useEffect } from "react";
       }
 
     
-      const evals  = Tracedata.evals;
-      const ruleEval = evals?.find((evaluation) => evaluation.evaluationType === "rule_based");
-      const llmEval = evals?.find((evaluation)=> evaluation.evaluationType === "llm_judge");
+      const evals  = Tracedata.evals || [];
+      const ruleEvals = evals.filter((evaluation) => evaluation.evaluationType === "rule_based").sort((a,b)=>
+                                 new Date(b.createdAt|| 0) - new Date(a.createdAt || 0));
+
+      const llmEvals = evals.filter((evaluation) => evaluation.evaluationType === "llm_judge").sort((a,b)=>
+                                 new Date(b.createdAt|| 0) - new Date(a.createdAt || 0));
       
 
 
@@ -100,7 +103,8 @@ import { useState,useEffect } from "react";
       const traceDuration = endTime - startTime;
       const processedSpans = processSpanTree(Tracedata.spans);
 
-          return (<div>
+          return (
+          <div>
                 {processedSpans.map((span) =>{
                     const spanStart = new Date(span.startTime).getTime();
                     const spanEnd = new Date(span.endTime).getTime();
@@ -139,8 +143,20 @@ import { useState,useEffect } from "react";
                         <h2>Evaluations</h2>
                         <div style={{marginTop : "20px"}}>
                              <h2>Rule Based Evaluations</h2>
-                             {!ruleEval && (<p>No rule-based evaluations available</p>)}
-                              {ruleEval && ruleEval.status === "pending" && (<p>
+                              
+                             {ruleEvals.length == 0 && (<p>No rule-based evaluations available</p>)}
+                              {ruleEvals.map((ruleEval)=>(
+                                   <div key = {ruleEval.evalId}
+                                        style = {{marginTop : "20px" , marginLeft : "10px"}}>
+                                             <h3>
+                                                  Evaluation: {ruleEval.evalId}
+                                             </h3>
+                                             {ruleEval.createdAt && (
+                                                  <p>
+                                                       <strong>Created:</strong>{new Date(ruleEval.createdAt).toLocaleString()}
+                                                  </p>
+                                             )}
+                                              {ruleEval && ruleEval.status === "pending" && (<p>
                                    Waiting to be evaluated.....
                               </p>)}
                               {ruleEval && ruleEval.status === "scoring" && (<p>
@@ -148,7 +164,7 @@ import { useState,useEffect } from "react";
                               </p>)}
                               {ruleEval && ruleEval.status === "failed" && (
                                     <p>
-                                        Evaluation Failed:{" "}
+                                        <strong>Evaluation Failed:</strong>{" "}
                                         {ruleEval.reasoning?.summary || "Unknown error"}
                                     </p>
                               )}
@@ -192,18 +208,35 @@ import { useState,useEffect } from "react";
                                         <p style = {{marginLeft : "10px"}}>
                                               {ruleEval.reasoning?.cost?.detail}
                                            </p>
+                                           <p>
+                                             <strong>Summary:</strong>{" "}{ruleEval.reasoning?.summary}
+                                           </p>
                                    </div>
                               )}
+                                        </div>
+                              ))}
 
                         </div>
                         <div style = {{marginTop : "20px"}}>
                          <h2>LLM Judge Evaluation</h2>
-                         {!llmEval && (
+                         {llmEvals.length === 0 && (
                               <p>
                                    No LLM-judge evaluation available
                               </p>
                          )}
-                         {llmEval && llmEval.status === "pending" && (<p>
+                         {llmEvals.map((llmEval)=>(
+                              <div key = {llmEval.evalId}
+                                   style = {{marginTop : "20px" , marginLeft : "10px"}}>
+                                        <h3>
+                                             Evaluation: {llmEval.evalId}
+                                        </h3>
+                                        {llmEval.createdAt && (
+                                             <p>
+                                                  <strong>Created:</strong>{" "}
+                                                  {new Date(llmEval.createdAt).toLocaleString()}
+                                             </p>
+                                        )}
+                                         {llmEval && llmEval.status === "pending" && (<p>
                                    Waiting to be evaluated.....
                               </p>)}
                          {llmEval && llmEval.status === "scoring" && (<p>
@@ -211,7 +244,7 @@ import { useState,useEffect } from "react";
                          </p>)}
                          {llmEval && llmEval.status === "failed" && (
                                    <p>
-                                   Evaluation Failed:{" "}
+                                   <strong>Evaluation Failed</strong>:{" "}
                                    {llmEval.reasoning?.summary || "Unknown error"}
                                    </p>
                          )}
@@ -263,6 +296,8 @@ import { useState,useEffect } from "react";
                               </div>
                          )}
 
+                                   </div>
+                         ))}
                         </div>
                  </div>
           </div>);
