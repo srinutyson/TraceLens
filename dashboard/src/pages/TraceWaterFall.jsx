@@ -85,6 +85,15 @@ import { useState,useEffect } from "react";
            )
       }
 
+    
+      const evals  = Tracedata.evals;
+      const ruleEval = evals?.find((evaluation) => evaluation.evaluationType === "rule_based");
+      const llmEval = evals?.find((evaluation)=> evaluation.evaluationType === "llm_judge");
+      
+
+
+
+
       const trace = Tracedata.trace;
       const startTime = new Date(trace.startTime).getTime();
       const endTime = new Date(trace.endTime).getTime();
@@ -126,6 +135,96 @@ import { useState,useEffect } from "react";
                         </div>
                      );
                 })}
+                 <div style={{marginTop : "30px"}}>
+                        <h2>Evaluations</h2>
+                        <div style={{marginTop : "20px"}}>
+                             <h2>Rule Based Evaluations</h2>
+                             {!ruleEval && (<p>No rule-based evaluations available</p>)}
+                              {ruleEval && ruleEval.status === "pending" && (<p>
+                                   Waiting to be evaluated.....
+                              </p>)}
+                              {ruleEval && ruleEval.status === "scoring" && (<p>
+                                    Evaluation in progress
+                              </p>)}
+                              {ruleEval && ruleEval.status === "failed" && (
+                                    <p>
+                                        Evaluation Failed:{" "}
+                                        {ruleEval.reasoning?.summary || "Unknown error"}
+                                    </p>
+                              )}
+                              {ruleEval && ruleEval.status === "completed" &&(
+                                   <div>
+                                        <p>
+                                             <strong>Overall Score:</strong>{" "}
+                                             {ruleEval.score}/100
+                                        </p>
+                                        <p>
+                                              <strong>Quality:</strong>{" "}
+                                             {ruleEval.reasoning?.quality?.score}/100
+                                        </p>
+                                        <p>
+                                             <strong>Latency:</strong>{" "}
+                                             {ruleEval.reasoning?.latency?.score}/100
+                                        </p>
+                                        <p>
+                                             <strong>Cost:</strong>{" "}
+                                             {ruleEval.reasoning?.cost?.score}/100
+                                        </p>
+                                   </div>
+                              )}
+
+                        </div>
+                        <div style = {{marginTop : "20px"}}>
+                         <h3>LLM Judge Evaluation</h3>
+                         {!llmEval && (
+                              <p>
+                                   No LLM-judge evaluation available
+                              </p>
+                         )}
+                         {llmEval && llmEval.status === "pending" && (<p>
+                                   Waiting to be evaluated.....
+                              </p>)}
+                         {llmEval && llmEval.status === "scoring" && (<p>
+                                   Evaluation in progress
+                         </p>)}
+                         {llmEval && llmEval.status === "failed" && (
+                                   <p>
+                                   Evaluation Failed:{" "}
+                                   {llmEval.reasoning?.summary || "Unknown error"}
+                                   </p>
+                         )}
+                         {llmEval && llmEval.status === "completed" &&(
+                              <div>
+
+                                  <p>
+                                        <strong>Overall Score:</strong>{" "}
+                                        {llmEval.score}/100
+                                  </p>
+                                   <p>
+                                        <strong>Correctness:</strong>{" "}
+                                        {llmEval.reasoning?.correctness?.score}/100
+                                  </p>
+                                  <p>
+                                        <strong>Relevance:</strong>{" "}
+                                        {llmEval.reasoning?.relevance?.score}/100
+                                  </p>
+                                  <p>
+                                        <strong>Completeness:</strong>{" "}
+                                        {llmEval.reasoning?.completeness?.score}/100
+                                  </p>
+                                  <p>
+                                        <strong>Clarity:</strong>{" "}
+                                        {llmEval.reasoning?.clarity?.score}/100
+                                  </p>
+                                  <p>
+                                        <strong>Instruction Following:</strong>{" "}
+                                        {llmEval.reasoning?.instructionFollowing?.score}/100
+                                  </p>
+                              </div>
+                         )}
+
+                        </div>
+                 </div>
           </div>);
 
       }

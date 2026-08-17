@@ -12,7 +12,7 @@ async function completeEvaluation(claimedEval , evaluation) {
     },
      {
         $set : {
-              score : evaluation.score,
+              score : evaluation.evalScore,
               reasoning  : evaluation.reasoning,
               status : "completed",
               lockedAt : null
@@ -104,8 +104,7 @@ export async function startEvalWorker(){
          try{
 
           const result =   await claimWork();
-          console.log(result , count);
-          count++;
+         
          }
          catch(error){
             console.error("Evaluation worker error: " , error);
