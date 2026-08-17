@@ -24,8 +24,7 @@ import Trace from "../models/trace.js";
         $setOnInsert : {
             traceId : spanData.traceId,
             projectId : projectId,
-            // status : 'success',
-            // name : isRoot ? spanData.name : 'Untitled Trace'
+            
         }
 
     };

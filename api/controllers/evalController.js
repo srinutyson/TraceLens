@@ -16,12 +16,7 @@ const evalIngestion = async (req,res)=>{
                      error : "Trace not found"
                 });
             }
-            // const evalExists = await Eval.findOne({traceId , projectId , evaluationType});
-            // if(evalExists){
-            //     return res.status(409).json({
-            //         error : "Evaluation already exists"
-            //     })
-            // }
+          
             const evaluation = await Eval.create({
                 evalId : randomUUID(),
                 traceId,

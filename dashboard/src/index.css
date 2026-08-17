@@ -1,12 +1,12 @@
-/* 1. The Global Dark Theme */
+
 :root {
-  --bg-app: #0f172a;       /* Deep slate background */
-  --bg-card: #1e293b;      /* Slightly lighter for rows/cards */
-  --bg-hover: #334155;     /* Highlight for hover states */
-  --text-main: #f8fafc;    /* Crisp white text */
-  --text-muted: #94a3b8;   /* Gray for IDs and secondary text */
+  --bg-app: #0f172a;       
+  --bg-card: #1e293b;     
+  --bg-hover: #334155;     
+  --text-main: #f8fafc;    
+  --text-muted: #94a3b8;   
   --border: #334155;
-  --accent: #3b82f6;       /* Bright blue for the waterfall bars */
+  --accent: #3b82f6;       
   
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -20,7 +20,7 @@ body {
   padding: 20px;
 }
 
-/* 2. The Overview Table Styling */
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -43,13 +43,13 @@ th {
   letter-spacing: 0.05em;
 }
 
-/* 3. Interactive Rows */
+
 tr:hover {
   background-color: var(--bg-hover);
   transition: background-color 0.2s ease-in-out;
 }
 
-/* 4. Tech Typography for IDs */
+
 .font-mono {
   font-family: var(--font-mono);
   color: var(--text-muted);
