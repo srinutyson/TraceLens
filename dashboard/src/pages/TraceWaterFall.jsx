@@ -161,21 +161,43 @@ import { useState,useEffect } from "react";
                                         <p>
                                               <strong>Quality:</strong>{" "}
                                              {ruleEval.reasoning?.quality?.score}/100
+                                        <div style = {{marginTop : "20px"}}>
+                                        <strong>Quality Factors:</strong>
+
+                                        {ruleEval.reasoning?.quality?.factors?.map((factor, index) => (
+                                             <div key={index} style={{ marginLeft: "10px", marginTop: "8px" }}>
+                                                  <p>
+                                                       <strong>{factor.rule}:</strong>{" "}
+                                                       {factor.detail}
+                                                  </p>
+
+                                                  <p>
+                                                       Deduction: {factor.deduction}
+                                                  </p>
+                                             </div>
+                                        ))}
+                                        </div>
                                         </p>
                                         <p>
                                              <strong>Latency:</strong>{" "}
-                                             {ruleEval.reasoning?.latency?.score}/100
+                                             {ruleEval.reasoning?.latency?.score}/100             
+                                        </p>
+                                        <p style = {{marginLeft : "10px"}}>
+                                              {ruleEval.reasoning?.latency?.detail}
                                         </p>
                                         <p>
                                              <strong>Cost:</strong>{" "}
                                              {ruleEval.reasoning?.cost?.score}/100
                                         </p>
+                                        <p style = {{marginLeft : "10px"}}>
+                                              {ruleEval.reasoning?.cost?.detail}
+                                           </p>
                                    </div>
                               )}
 
                         </div>
                         <div style = {{marginTop : "20px"}}>
-                         <h3>LLM Judge Evaluation</h3>
+                         <h2>LLM Judge Evaluation</h2>
                          {!llmEval && (
                               <p>
                                    No LLM-judge evaluation available
@@ -204,21 +226,39 @@ import { useState,useEffect } from "react";
                                         <strong>Correctness:</strong>{" "}
                                         {llmEval.reasoning?.correctness?.score}/100
                                   </p>
+                                   <p>
+                                        Comment:{" "}{llmEval.reasoning?.correctness?.comment}
+                                   </p>
                                   <p>
                                         <strong>Relevance:</strong>{" "}
                                         {llmEval.reasoning?.relevance?.score}/100
                                   </p>
+                                    <p>
+                                        Comment:{" "}{llmEval.reasoning?.relevance?.comment}
+                                    </p>
                                   <p>
                                         <strong>Completeness:</strong>{" "}
                                         {llmEval.reasoning?.completeness?.score}/100
+                                  </p>
+                                  <p>
+                                       Comment:{" "}{llmEval.reasoning?.completeness?.comment}
                                   </p>
                                   <p>
                                         <strong>Clarity:</strong>{" "}
                                         {llmEval.reasoning?.clarity?.score}/100
                                   </p>
                                   <p>
+                                        Comment:{" "}{llmEval.reasoning?.clarity?.comment}
+                                  </p>
+                                  <p>
                                         <strong>Instruction Following:</strong>{" "}
                                         {llmEval.reasoning?.instructionFollowing?.score}/100
+                                  </p>
+                                  <p>
+                                       Comment:{" "}{llmEval.reasoning?.instructionFollowing?.comment}
+                                  </p>
+                                  <p>
+                                       <strong>Summary:</strong>{" "}{llmEval.reasoning?.summary}
                                   </p>
                               </div>
                          )}

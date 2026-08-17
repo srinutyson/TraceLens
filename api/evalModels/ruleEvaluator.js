@@ -153,12 +153,12 @@ export function ruleEvaluator(trace , spans){
 
             latency: {
                 score: latencyScore,
-                detail: `Duration ${traceTime}s (in range ${latencyRange})`
+                detail: `Duration: ${traceTime}s (in range ${latencyRange})`
             },
 
             cost: {
                 score: costScore,
-                detail: `Total cost $${cost} (in range ${costRange})`
+                detail: `Total cost: $${cost} (in range ${costRange})`
             },
 
             summary:
