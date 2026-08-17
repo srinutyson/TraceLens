@@ -38,13 +38,12 @@ async function failEvaluation(claimedEval , error){
      );
 }
 
-async function claimWork(){
+export async function claimWork(){
     const now = new Date();
     const staleTime = new Date(now.getTime() - 5 * 60 * 1000);
   
 
     const pending = await Eval.find({ status: "pending" });
-    console.log("Pending evals:", pending);
     const workEval = await Eval.findOneAndUpdate({
           $or : [
                  {status : "pending"},
