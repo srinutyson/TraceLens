@@ -183,3 +183,26 @@ export const loginController = async(req,res)=>{
            });
      }
 }
+
+
+export const logoutController = async(req,res)=>{
+      req.session.destroy((error)=>{
+        if(error){
+            console.error("Logout error:",error);
+
+            return res.status(500).json({
+                 message : "Internal server error"
+            });
+
+        }
+         res.clearCookie("connect.sid",{
+            httponly : true,
+            secure : false,
+            sameSite : "lax"
+         });
+
+         return res.status(200).json({
+             message : "Logout sussessful"
+         });
+      });
+};
