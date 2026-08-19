@@ -202,7 +202,7 @@ export const logoutController = async(req,res)=>{
          });
 
          return res.status(200).json({
-             message : "Logout sussessful"
+             message : "Logout successful"
          });
       });
 };
