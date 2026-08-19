@@ -6,7 +6,7 @@ import crypto from 'crypto';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 
-const signupController  = async (req,res)=>{
+export const signupController  = async (req,res)=>{
        try{
             const email = req.body.email;
             const password = req.body.password;
@@ -17,7 +17,6 @@ const signupController  = async (req,res)=>{
             }
              
              if (typeof email !== "string" || typeof password !== "string") {
-                console.log("error");
             return res.status(400).json({
                 message: "Email and password must be strings"
             });
@@ -120,5 +119,67 @@ const signupController  = async (req,res)=>{
             });
        }
 }
+export const loginController = async(req,res)=>{
+     try{
+           const {email,password} = req.body;
+           if(!email || !password){
+               return res.status(400).json({
+                  message :  "Invalid email or password"
+               });
+           }
+           if(typeof email !== "string" || typeof password !== "string"){
+               return res.status(400).json({
+                 message : "Email and password must be strings"
+               })
+           }
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          const normalizedEmail = email.trim().toLowerCase();
+          if(!emailRegex.test(normalizedEmail)){
+               return res.status(400).json({
+                   message : "Invalid email format"
+               });
+          }
+          if (password.length < 8) {
+            return res.status(400).json({
+                message: "Password must be at least 8 characters long"
+            });
+          }
+          const existingUser = await User.findOne({email : normalizedEmail});
+          if(!existingUser){
+                return res.status(401).json({
+                      message : "Invalid Email or password"
+                })
+          }
+          if(!existingUser.isVerified){
+                 return res.status(401).json({
+                     message : "Authentication pending"
+                 })
+          }
+          const passwordMatch = await bcrypt.compare(password , existingUser.passwordHash);
+          if(!passwordMatch){
+              return res.status(401).json({
+                   message : "Invalid Email or password"
+              })
+          }
 
-export default signupController;
+          req.session.userId = existingUser._id;
+
+         req.session.save((error)=>{
+            if(error){
+                console.error("Session save error:",error);
+                return res.status(500).json({
+                    message : "Internal server error"
+                })
+            }
+            return res.status(200).json({
+              message : "Login successful"
+            });
+         })
+     }
+     catch(error){
+           console.error("Login error" , error);
+           return  res.status(500).json({
+             message : "Internal server error"
+           });
+     }
+}

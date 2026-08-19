@@ -38,15 +38,16 @@ async function startServer() {
             }
          })
     );
+     app.use('/api/auth',authrouter);
+     app.use('/api', router);
 
+    
     app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`);
     });
 
     startEvalWorker();
 }
-app.use('/api/auth',authrouter);
-app.use('/api', router);
 
 
 startServer();
