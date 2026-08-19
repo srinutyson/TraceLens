@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import 'dotenv/config';
 import router from './routes/Routes.js';
+import authrouter from './routes/authRoutes.js';
 import { startEvalWorker } from './workers/evalWorker.js';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
@@ -15,7 +16,7 @@ app.use(cors({
     credentials:true
 }));
 
-app.use('/api', router);
+
 
 async function startServer() {
     await mongoose.connect('mongodb://localhost:27017/tracelens');
@@ -44,5 +45,8 @@ async function startServer() {
 
     startEvalWorker();
 }
+app.use('/api/auth',authrouter);
+app.use('/api', router);
+
 
 startServer();

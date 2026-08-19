@@ -6,22 +6,24 @@ import crypto from 'crypto';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 
-const signupController  = (req,res)=>{
+const signupController  = async (req,res)=>{
        try{
-            const emailId = req.body.emailId;
+            const email = req.body.email;
             const password = req.body.password;
-            if(!emailId || !password){
+            if(!email || !password){
                  return  res.status(400).json({
                       message : "Invalid Email or Password"
                   })
             }
+             
              if (typeof email !== "string" || typeof password !== "string") {
+                console.log("error");
             return res.status(400).json({
                 message: "Email and password must be strings"
             });
             }
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            const normalizedEmail = emailId.trim().toLowerCase();
+            const normalizedEmail = email.trim().toLowerCase();
             if (!emailRegex.test(normalizedEmail)) {
                 return res.status(400).json({
                     message: "Invalid email format"
@@ -34,20 +36,20 @@ const signupController  = (req,res)=>{
             }
 
          
-            const existingUser = await User.find({emailId : normalizedEmail});
+            const existingUser = await User.findOne({email : normalizedEmail});
              if(existingUser){
                  if(existingUser.isVerified){
                      return res.status(409).json({
                         message : "User already exists"
                      });
                  }
-                 const otpExpired = !existingUser.otpExpiresAt|| existingUser.otpExpires.getTime() <= Date.now();
+                 const otpExpired = !existingUser.otpExpiresAt|| existingUser.otpExpiresAt.getTime() <= Date.now();
                  if(!otpExpired){
                     return res.status(429).json({
                          message : "OTP is still active.Please use the existing OTP"
                     });
                  }
-                const otp = crypto.randoInt(100000,1000000).toString();
+                const otp = crypto.randomInt(100000,1000000).toString();
                 const otpHash = await bcrypt.hash(otp,10);
                 existingUser.otpHash = otpHash;
                 existingUser.otpExpiresAt = new Date(Date.now() + (10 * 60 * 1000));
@@ -118,3 +120,5 @@ const signupController  = (req,res)=>{
             });
        }
 }
+
+export default signupController;
