@@ -20,7 +20,7 @@ const projectSchema = new mongoose.Schema(
             required : true,
             index : true
         },
-        apiKeyhash : {
+        apiKeyHash : {
             type : String ,
             required : true
         }
@@ -28,3 +28,5 @@ const projectSchema = new mongoose.Schema(
         timestamps : true
     }
 )
+
+export default mongoose.model('Projects',projectSchema);
