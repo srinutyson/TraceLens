@@ -9,9 +9,9 @@ import { authorizeProject } from '../middleware/authorizeProject.js';
 const router = express.Router();
 
 router.post('/ingest',protectAuth, ingestSpan);
-router.get('/traces',protectAuth, getTraces);
-router.get('/traces/:traceId',protectAuth, getTracesById);
-router.post('/traces/:traceId/eval',protectAuth ,evalIngestion);
+router.get('/projects/:projectId/traces',requiresAuth,authorizeProject, getTraces);
+router.get('/projects/:projectId/traces/:traceId',requiresAuth,authorizeProject, getTracesById);
+router.post('/projects/:projectId/traces/:traceId/eval',requiresAuth,authorizeProject,evalIngestion);
 router.post('/projects',requiresAuth,createProject);
 router.get('/projects', requiresAuth,getProjects);
 
