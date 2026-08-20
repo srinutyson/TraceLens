@@ -5,6 +5,7 @@ import { protectAuth } from '../middleware/protectAuth.js';
 import evalIngestion from '../controllers/evalController.js';
 import { createProject , getProjects } from '../controllers/projectController.js';
 import { requiresAuth } from '../middleware/authMiddleware.js';
+import { authorizeProject } from '../middleware/authorizeProject.js';
 const router = express.Router();
 
 router.post('/ingest',protectAuth, ingestSpan);

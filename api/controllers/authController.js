@@ -125,7 +125,7 @@ export const loginController = async(req,res)=>{
            const {email,password} = req.body;
            if(!email || !password){
                return res.status(400).json({
-                  message :  "Invalid email or password"
+                  message :  "Invalid email or password "
                });
            }
            if(typeof email !== "string" || typeof password !== "string"){
@@ -148,7 +148,7 @@ export const loginController = async(req,res)=>{
           const existingUser = await User.findOne({email : normalizedEmail});
           if(!existingUser){
                 return res.status(401).json({
-                      message : "Invalid Email or password"
+                      message : "Invalid Email or password "
                 })
           }
           if(!existingUser.isVerified){
@@ -159,7 +159,7 @@ export const loginController = async(req,res)=>{
           const passwordMatch = await bcrypt.compare(password , existingUser.passwordHash);
           if(!passwordMatch){
               return res.status(401).json({
-                   message : "Invalid Email or password"
+                   message : "Invalid Email or password "
               })
           }
 
