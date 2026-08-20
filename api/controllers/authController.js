@@ -119,6 +119,7 @@ export const signupController  = async (req,res)=>{
             });
        }
 }
+
 export const loginController = async(req,res)=>{
      try{
            const {email,password} = req.body;
@@ -184,7 +185,6 @@ export const loginController = async(req,res)=>{
      }
 }
 
-
 export const logoutController = async(req,res)=>{
       req.session.destroy((error)=>{
         if(error){
@@ -206,3 +206,78 @@ export const logoutController = async(req,res)=>{
          });
       });
 };
+
+export const otpVerificationController = async ( req,res)=>{
+    try{
+         const {email , otp} = req.body;
+         if(!email || !otp){
+              return res.status(400).json({
+                 message : "Invalid credentials"
+              })
+         }
+         if(typeof email !== "string" || typeof otp !== "string"){
+            return res.status(400).json({
+                  message : "email and otp must be strings"
+            });
+         }
+
+         const normalizedEmail = email.trim().toLowerCase();
+         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+         if(!emailRegex.test(normalizedEmail)){
+            return res.status(400).json({
+                 message : "Invalid Email"
+            })
+         }
+         const existingUser = await User.findOne({email : normalizedEmail});
+         if(!existingUser){
+               return res.status(401).json({
+                 message : "Invalid Email"
+               });
+         }
+         if(existingUser.isVerified){
+              return res.status(409).json({
+                 message : "Email already exists"
+              });
+         }
+         if(!existingUser.otpHash){
+             return res.status(400).json({
+                  message : "Invalid or Expired OTP"
+             });
+         }
+         const otpExpired = !existingUser.otpExpiresAt|| existingUser.otpExpiresAt.getTime() <= Date.now();
+         if(otpExpired){
+              return res.status(400).json({
+                 message : "Invalid or Expired OTP"
+              });
+         }
+         
+        if(existingUser.otpAttempts >= 5){
+            return res.status(429).json({
+              message : "Maximum OTP verification attempts exceeded. Please request a new OTP"
+            });
+        }
+        const otpCompare = await bcrypt.compare(otp , existingUser.otpHash);
+        if(!otpCompare){
+            existingUser.otpAttempts += 1;
+            await existingUser.save();
+             return res.status(401).json({
+                 message : "Invalid OTP"
+             })
+        }
+        existingUser.isVerified  = true;
+        existingUser.otpAttempts = 0;
+        existingUser.otpHash = undefined;
+        existingUser.otpExpiresAt = undefined;
+        await existingUser.save();
+
+        return res.status(200).json({
+             message : "OTP verification successful"
+        });
+    }
+    catch(error){
+            console.error("OTP verification error",error);
+            return res.status(500).json({
+                message : "Internal server error"
+            });
+    }
+}
