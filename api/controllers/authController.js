@@ -281,3 +281,73 @@ export const otpVerificationController = async ( req,res)=>{
             });
     }
 }
+
+export const otpResendController = async(req,res)=>{
+     try{
+           const {email} = req.body;
+           if(!email){
+              return res.status(400).json({
+                 message : "Invalid email"
+              })
+           }
+           if(typeof email !== "string"){
+            return res.status(400).json({
+                 message : "email should be a string"
+            })
+           }
+           const normalizedEmail = email.trim().toLowerCase();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if(!emailRegex.test(normalizedEmail)){
+                return res.status(400).json({
+                     message : "Invalid Email"
+                })
+            }
+            const user = await User.findOne({email : normalizedEmail});
+            if(!user){
+                 return res.status(401).json({
+                    message : "Invalid Email"
+                 })
+            }
+           if(user.isVerified){
+              return res.status(409).json({
+                 message : "Email already exists"
+              });
+            }
+            const otp = crypto.randomInt(100000,1000000).toString();
+            const otpHash = await bcrypt.hash(otp,10);
+            user.otpExpiresAt  = new Date(Date.now() + 1000 * 10 * 60);
+            user.otpHash  = otpHash;
+            user.otpAttempts = 0;
+            await user.save();
+
+            const {error} = await resend.emails.send({
+                from  : "onboarding@resend.dev",
+                to : [normalizedEmail],
+                subject : "TraceLens Email Verification",
+                html : `
+                        <h2>TraceLens Email Verification</h2>
+                        <p>Your verification OTP is:</p>
+                        <h1>${otp}</h1>
+                        <p>This OTP expires in 10 minutes</p>
+                      `
+            });
+            if(error){
+                 console.error("Resend error",error);
+                 return res.status(500).json({
+                    message : "Internal server error"
+                 });
+            }
+
+            return res.status(200).json({
+                 message : "OTP sent successfully"
+            });
+
+     }
+     catch(error){
+        console.error("OTP resend error" , error);
+
+        res.status(500).json({
+             message : "Internal server error"
+        });
+     }
+}
