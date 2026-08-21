@@ -46,16 +46,16 @@ import { useState,useEffect } from "react";
   }
 
   function TraceWaterFall(){
-    const {traceId} = useParams();
+    const {traceId,projectId} = useParams();
     const [loadingStatus , setLoadingStatus] = useState(true);
     const [Tracedata , setTraceData] = useState([]);
     useEffect(() =>{
          const fetchTrace = async () =>{
               try{
-                const response = await fetch(`http://localhost:4000/api/traces/${traceId}`,{
+                const response = await fetch(`http://localhost:4000/api/projects/${projectId}/traces/${traceId}`,{
+                    credentials : "include",
                      headers :{
-                        "Content-Type" : "application/json",
-                        "x-project-id" : "test-project"
+                        "Content-Type" : "application/json"
                      }
                 });
 
@@ -74,7 +74,7 @@ import { useState,useEffect } from "react";
          fetchTrace();
 
 
-    },[traceId]);
+    },[traceId,projectId]);
       if(loadingStatus){
            return (
               <div>

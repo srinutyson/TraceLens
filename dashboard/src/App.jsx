@@ -2,6 +2,7 @@ import {BrowserRouter , Routes , Route} from "react-router-dom";
 // import { useState,useRef } from "react";
 import  TraceList from "./pages/TraceList.jsx";
 import  TraceWaterFall from "./pages/TraceWaterFall.jsx";
+import { Signup } from "./pages/signUp.jsx";
 
 function App(){
 
@@ -9,11 +10,14 @@ function App(){
            <BrowserRouter>
            <Routes>
 
-            <Route path = "/" element = {<TraceList/>}>
+            <Route path = "/project/:projectId" element = {<TraceList/>}>
 
             </Route>
 
-            <Route path = "/traces/:traceId" element = {<TraceWaterFall/>}>
+            <Route path = "/projects/:projectId/traces/:traceId" element = {<TraceWaterFall/>}>
+
+            </Route>
+            <Route path = "/signup" element = {<Signup/>}>
 
             </Route>
 

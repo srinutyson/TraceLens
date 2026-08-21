@@ -14,7 +14,7 @@ function Trace({id , name}){
             
               </td>
               <td>
-                <Link to = {`/traces/${id}`}>
+                <Link to = {`/projects/:projectId/traces/${id}`}>
                   view Trace
                 </Link>
               </td>

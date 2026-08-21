@@ -1,19 +1,22 @@
 import { useState , useEffect } from "react";
 import  Trace  from "./TraceItem.jsx";
+import { useParams } from "react-router-dom";
 
 
  function TraceList(){
     console.log("rendering");
+    const {projectId} = useParams();
     const [loadingStatus , setLoadingStatus] = useState(true);
     const [traces , setTraces] = useState([]);
 
      useEffect(() =>{
          const fetchTraces = async () =>{
             try{
-                const response = await fetch("http://localhost:4000/api/traces",{
+                const response = await fetch(`http://localhost:4000/api/projects/${projectId}/traces`,{
+                    credentials : "include",
             headers : {
                "Content-Type" : "application/json",
-               "x-project-id" : "test-project"
+              
             }
         });
          const data = await response.json();
@@ -26,7 +29,7 @@ import  Trace  from "./TraceItem.jsx";
        }
       }    
         fetchTraces();
-   },[]);
+   },[projectId]);
 
        if(loadingStatus){
            return (<div>
