@@ -2,7 +2,8 @@ import {BrowserRouter , Routes , Route} from "react-router-dom";
 // import { useState,useRef } from "react";
 import  TraceList from "./pages/TraceList.jsx";
 import  TraceWaterFall from "./pages/TraceWaterFall.jsx";
-import { Signup } from "./pages/signUp.jsx";
+import { Signup } from "./pages/Signup.jsx";
+import { VerifyOtp } from "./pages/VerifyOtp.jsx";
 
 function App(){
 
@@ -20,7 +21,9 @@ function App(){
             <Route path = "/signup" element = {<Signup/>}>
 
             </Route>
+            <Route path = "/verify-otp" element = {<VerifyOtp/>}>
 
+            </Route>
            </Routes>
           </BrowserRouter>
       );
