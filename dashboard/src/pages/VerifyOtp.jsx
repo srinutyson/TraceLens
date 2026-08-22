@@ -41,6 +41,7 @@ export function VerifyOtp(){
             }
             navigate("/login",{state : {email}});
         } catch(error){
+              console.error(error);
              setError("Something went wrong please try again");
         }
          finally{
@@ -64,12 +65,13 @@ export function VerifyOtp(){
             console.log("iiji")
             if(!response.ok){
                 setError(data.message || "Verification failed")
-                console.log("rgfbrr")
+               
             }
-            console.log("vrbvrbt");
+           
             setResendMessage("New OTP has been sent");
        }
        catch(err){
+            console.error(err);
             setError("Something went wrong please try again");
        }
        finally{
@@ -88,7 +90,7 @@ export function VerifyOtp(){
                       type = "email"
                       value = {email}
                       onChange={(event)=> setEmail(event.target.value)}
-                      placeholder="Enter your email"
+                      placeholder="email"
                        disabled  = {emailIsLocked}
                       required
                     />
@@ -105,7 +107,7 @@ export function VerifyOtp(){
                     maxLength={6}
                     value = {otp}
                     onChange={(event)=> setOtp(event.target.value)}
-                    placeholder="Enter the 6-digit code"
+                    placeholder="6-digit code"
                     required
                     
                     />

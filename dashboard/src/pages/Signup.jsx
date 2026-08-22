@@ -64,7 +64,7 @@ export function Signup(){
                     type = "email"
                     value = {email}
                     onChange = {(event)=>setEmail(event.target.value)}
-                    placeholder="Enter your email"
+                    placeholder="email"
                     required
                     />
                 </div>
@@ -75,7 +75,7 @@ export function Signup(){
                     type = "password"
                     value = {password}
                     onChange = {(event)=> setPassword(event.target.value)}
-                    placeholder="Enter your password"
+                    placeholder="password"
                     minLength={8}
                     required
                     />

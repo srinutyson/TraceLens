@@ -4,6 +4,7 @@ import  TraceList from "./pages/TraceList.jsx";
 import  TraceWaterFall from "./pages/TraceWaterFall.jsx";
 import { Signup } from "./pages/Signup.jsx";
 import { VerifyOtp } from "./pages/VerifyOtp.jsx";
+import { Login } from "./pages/login.jsx";
 
 function App(){
 
@@ -24,6 +25,7 @@ function App(){
             <Route path = "/verify-otp" element = {<VerifyOtp/>}>
 
             </Route>
+            <Route path = "/login" element = {<Login/>} ></Route>
            </Routes>
           </BrowserRouter>
       );
