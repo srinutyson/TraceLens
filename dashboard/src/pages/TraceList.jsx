@@ -1,14 +1,15 @@
 import { useState , useEffect } from "react";
 import  Trace  from "./TraceItem.jsx";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 
 
  function TraceList(){
-    console.log("rendering");
+    
     const {projectId} = useParams();
     const [loadingStatus , setLoadingStatus] = useState(true);
     const [traces , setTraces] = useState([]);
-
+    const [error,setError] = useState("");
+    const navigate = useNavigate();
      useEffect(() =>{
          const fetchTraces = async () =>{
             try{
@@ -20,23 +21,45 @@ import { useParams } from "react-router-dom";
             }
         });
          const data = await response.json();
+         if(!response.ok){
+              if(response.status === 404) setError("Project not found")
+              else setError("Could not load traces");
+              return ;
+         }
           setTraces( data);
-            }catch(error){
-          console.error("Failed to fetch traces",error);
+            }catch{
+         
+          setError("Failed to fetch traces ");
        }
        finally{
             setLoadingStatus(false);
        }
       }    
         fetchTraces();
-   },[projectId]);
-
+   },[projectId,navigate]);
+        
        if(loadingStatus){
            return (<div>
                <p>Loading Traces..................</p>
            </div>);
        }
+        if(error){
+           return (
+              <div>
+                <p>{error}</p>
+              </div>
+           )
+       }
+       if(traces.length === 0){
+           return (
+              <div>
+                <p>Your project didn't record any traces</p>
+              </div>
+           )
+       }
+        
           return (<>
+            
                 <table>
                     <thead>
                         <tr>
@@ -49,7 +72,7 @@ import { useParams } from "react-router-dom";
                     <tbody>
                        {
                         traces.map((trace) =>(
-                             <Trace key = {trace.traceId} id = {trace.traceId} name = {trace.name}/> 
+                             <Trace key = {trace.traceId} id = {trace.traceId} name = {trace.name} projectId = {projectId}/> 
                         ))}
                     </tbody>
                 </table>

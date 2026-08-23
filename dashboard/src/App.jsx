@@ -12,7 +12,7 @@ function App(){
            <BrowserRouter>
            <Routes>
 
-            <Route path = "/project/:projectId" element = {<TraceList/>}>
+            <Route path = "/projects/:projectId/traces" element = {<TraceList/>}>
 
             </Route>
 

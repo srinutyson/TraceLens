@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 
 
-function Trace({id , name}){
+function Trace({id , name,projectId}){
      return (
          
            <tr>
@@ -14,7 +14,7 @@ function Trace({id , name}){
             
               </td>
               <td>
-                <Link to = {`/projects/:projectId/traces/${id}`}>
+                <Link to = {`/projects/${projectId}/traces/${id}`}>
                   view Trace
                 </Link>
               </td>

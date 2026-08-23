@@ -35,7 +35,7 @@ export function Projects(){
              }
              
               
-               console.log(data);
+              
                 setProjects(data);
             }catch(error){
                  console.error(error);
@@ -127,7 +127,7 @@ export function Projects(){
                         <ul>
                             {projects.map((project)=>(
                                  <li key = {project.projectId}>
-                                    <button type = "button" onClick = {()=> navigate(`projects/${project.projectId}/traces`)}>
+                                    <button type = "button" onClick = {()=> navigate(`/projects/${project.projectId}/traces`)}>
                                         {project.name} ({project.projectId})
                                     </button>
                                  </li>
