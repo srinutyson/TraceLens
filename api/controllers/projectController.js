@@ -23,13 +23,16 @@ export const createProject = async(req,res)=>{
         })
      };
      const projectId = crypto.randomUUID();
-     const apiKey = crypto.randomBytes(32).toString("hex");
-     const apiKeyHash = await bcrypt.hash(apiKey,10);
+     const apiKeyLookupId = crypto.randomBytes(6).toString("hex");
+     const apiKeySecret = crypto.randomBytes(32).toString("hex");
+      const apiKey = `tl_${apiKeyLookupId}_${apiKeySecret}`
+        const apiKeyHash = await bcrypt.hash(apiKeySecret,10);
      const project = new Projects({
           projectId : projectId,
           name : normalizedName,
           apiKeyHash : apiKeyHash,
-          ownerId : req.user._id
+          ownerId : req.user._id,
+          apiKeyLookupId : apiKeyLookupId
      });
      await project.save();
      return res.status(201).json({

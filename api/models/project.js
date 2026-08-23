@@ -23,6 +23,13 @@ const projectSchema = new mongoose.Schema(
         apiKeyHash : {
             type : String ,
             required : true
+        },
+        apiKeyLookupId : {
+              type : String,
+              required: true,
+              index : true,
+              unique : true,
+
         }
     },{
         timestamps : true
