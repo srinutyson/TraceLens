@@ -33,7 +33,7 @@ export const createProject = async(req,res)=>{
      });
      await project.save();
      return res.status(201).json({
-         message : "Project creted successfully",
+         message : "Project created successfully",
          project :{
             projectId : project.projectId,
             name : project.name
@@ -52,11 +52,11 @@ export const createProject = async(req,res)=>{
 
 export const getProjects = async(req,res)=>{
      try{
-        const user = req.user;
-     const projects = await Projects.find({ownerId : user._id}).select(" projectId name updatedAt createdAt");
-     return res.status(200).json({
+     const user = req.user;
+     const projects = await Projects.find({ownerId : user._id}).select("projectId name updatedAt createdAt");
+     return res.status(200).json(
           projects
-     })
+     )
      }catch(error){
         console.error("Get projects error:",error);
 
