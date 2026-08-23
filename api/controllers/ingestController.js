@@ -1,9 +1,21 @@
 import Span from "../models/span.js";
 import Trace from "../models/trace.js";
+import mongoose from "mongoose";
  const ingestSpan = async (req,res)=>{
 
    try {
     const  spanData = req.body;
+    if(!spanData || typeof spanData !== "object" || Array.isArray(spanData)){
+        return res.status(400).json({
+        message : "Request body must be a JSON object"
+            });
+        }
+    if(!spanData.traceId){
+        return res.status(400).json({
+        message : "traceId is required"
+            });
+        }
+
     const  projectId = req.projectId;
     spanData.projectId = projectId;
     await Span.create(spanData);
@@ -76,6 +88,17 @@ import Trace from "../models/trace.js";
        });
 }
 catch(error){
+        if(error instanceof mongoose.Error.ValidationError){
+        const fieldErrors = Object.keys(error.errors).map((field) => ({
+        field : field,
+        message : error.errors[field].message
+                }));
+        console.log('Ingest validation failed:', fieldErrors);
+        return res.status(400).json({
+        message : 'Invalid span data',
+        errors : fieldErrors
+                });
+            }
         console.error('Ingestion Error', error);
         res.status(500).json({
             error : 'Internal server error'
