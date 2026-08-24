@@ -190,7 +190,7 @@ import { useState,useEffect } from "react";
                             </button>
                             {" "}
                             <button type = "button" onClick = {()=> handleTriggerEval("llm_judge")} disabled = {triggeringLLM}>
-                               {triggeringLLM ? "Running..." : "Run LLM Judge Evaluation"}
+                               {triggeringLLM ? "Running..." : "Run LLM-Judge Evaluation"}
                             </button>
                           {triggerError && (
                                <p>{triggerError}</p>
