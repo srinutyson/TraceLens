@@ -1,7 +1,7 @@
 import { TraceLens } from './index.js';
 
 // 1. Initialize our SDK tracker
-const tracer = new TraceLens({ projectId: 'proj_demo_456', apiKey: 'dev_key' });
+const tracer = new TraceLens({ projectId: '00326b2c-55fb-4cd1-b22d-f9c84533db07', apiKey: 'tl_e78d168771d6_4144845db9a8f548e7552a6666aee4151b4f73c44b0a188fc8f85d342f0411fb' });
 
 // Helper function to simulate network lag (turns setTimeout into an awaitable Promise)
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

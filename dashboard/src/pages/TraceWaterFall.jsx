@@ -49,8 +49,11 @@ import { useState,useEffect } from "react";
     const {traceId,projectId} = useParams();
     const [loadingStatus , setLoadingStatus] = useState(true);
     const [Tracedata , setTraceData] = useState([]);
-    useEffect(() =>{
-         const fetchTrace = async () =>{
+    const [triggeringRule , setTrigerringRule] = useState(false);
+    const  [triggeringLLM , setTriggeringLLM] = useState(false);
+    const [triggerError , setTriggerError] = useState("");
+
+   const fetchTrace = async () =>{
               try{
                 const response = await fetch(`http://localhost:4000/api/projects/${projectId}/traces/${traceId}`,{
                     credentials : "include",
@@ -71,10 +74,50 @@ import { useState,useEffect } from "react";
               }
          };
 
+    useEffect(() =>{
+         
+
          fetchTrace();
 
 
     },[traceId,projectId]);
+
+
+     const handleTriggerEval = async(evaluationType)=>{
+             setTriggerError("");
+             if(evaluationType === 'rule_based'){
+               setTrigerringRule(true);
+             }
+             else setTriggeringLLM(true);
+
+             try{
+               const response = await fetch(`http://localhost:4000/api/projects/${projectId}/traces/${traceId}/eval`,{
+                    method : "POST",
+                    headers : {"Content-Type" : "application/json"},
+                    credentials : "include",
+                    body : JSON.stringify({evaluationType}),
+               });
+               const data = await response.json();
+               if(!response.ok){
+                    if(response.status === 409)setTriggerError("An evaluation is already in progress fo this trace");
+                    else setTriggerError(data.message||data.error||"Could not start evaluation")
+                    return;
+               }
+              const maxAttempts = 5;
+               const delayMs = 3000;
+
+               for(let attempt = 0; attempt < maxAttempts; attempt++){
+                    await new Promise((resolve) => setTimeout(resolve, delayMs));
+                    await fetchTrace();
+               };
+             }catch{
+                 setTriggerError("Something went wrong, please try again");
+             }
+             finally{
+                 if(evaluationType === 'rule_based') setTrigerringRule(false);
+                 else setTriggeringLLM(false);
+             }
+     }
       if(loadingStatus){
            return (
               <div>
@@ -141,6 +184,18 @@ import { useState,useEffect } from "react";
                 })}
                  <div style={{marginTop : "30px"}}>
                         <h2>Evaluations</h2>
+                        <div style = {{marginTop : "10px" , marginBottom : "10px"}}>
+                            <button type = "button" onClick = {()=> handleTriggerEval("rule_based")} disabled = {triggeringRule}>
+                               {triggeringRule ? "Running..." : "Run Rule-Based Evaluation"}
+                            </button>
+                            {" "}
+                            <button type = "button" onClick = {()=> handleTriggerEval("llm_judge")} disabled = {triggeringLLM}>
+                               {triggeringLLM ? "Running..." : "Run LLM Judge Evaluation"}
+                            </button>
+                          {triggerError && (
+                               <p>{triggerError}</p>
+                          )}
+                        </div>
                         <div style={{marginTop : "20px"}}>
                              <h2>Rule Based Evaluations</h2>
                               

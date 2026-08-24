@@ -57,7 +57,7 @@ export class TraceLens{
         });
       spanPayload.endTime = Date.now();
       spanPayload.status = 'success';
-      exporter(spanPayload);
+      exporter(spanPayload,this.apiKey);
       return result ;
 
    }
@@ -66,7 +66,7 @@ export class TraceLens{
          spanPayload.status = 'error';
          spanPayload.errorMessage = error.message;
       
-         exporter(spanPayload);
+         exporter(spanPayload,this.apiKey);
          throw error;
    }
     }

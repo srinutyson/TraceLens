@@ -1,9 +1,9 @@
-export const exporter = (spanData)=>{
+export const exporter = (spanData,apiKey)=>{
     fetch('http://localhost:4000/api/ingest',{
         method : 'POST',
        headers :{
          'Content-type' : 'application/json',
-         'x-project-id' : 'test-project-123'
+         'Authorization' : `Bearer ${apiKey}`
        },
        body : JSON.stringify(spanData)
     })
