@@ -53,6 +53,7 @@ export class TraceLens{
                  if(spanData?.output) spanPayload.output = spanData.output;
                  if(spanData?.tokens) spanPayload.tokens = spanData.tokens;
                  if(spanData?.model) spanPayload.model = spanData.model;
+                 if(spanData?.cost !== undefined) spanPayload.cost = spanData.cost;
               })
         });
       spanPayload.endTime = Date.now();

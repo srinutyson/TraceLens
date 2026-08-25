@@ -1,6 +1,6 @@
 {
   "name": "tracelens-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Lightweight tracing SDK for TraceLens - capture nested spans and traces for LLM and agent applications.",
   "type": "module",
   "main": "index.js",
