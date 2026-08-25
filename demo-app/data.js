@@ -54,3 +54,25 @@ export function lookupPricingTier(planName) {
   const normalized = planName?.toLowerCase();
   return plans[normalized] || { error: `Unknown plan: ${planName}` };
 }
+
+export function validateSession() {
+  return {
+    valid: true,
+    sessionId: `sess_${Math.random().toString(16).slice(2, 10)}`
+  };
+}
+
+export function checkRateLimit() {
+  return {
+    withinLimit: true,
+    remaining: 87,
+    limit: 100
+  };
+}
+
+export function fetchAccountUsage() {
+  return {
+    eventsUsedThisMonth: 342,
+    planLimit: 100000
+  };
+}
