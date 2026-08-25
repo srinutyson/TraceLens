@@ -1,6 +1,31 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+const cardStyle = {
+    background: "var(--bg-surface-2)",
+    border: "0.5px solid var(--border)",
+    borderRadius: "var(--radius)",
+    padding: "16px"
+};
+
+const buttonStyle = {
+    background: "transparent",
+    border: "0.5px solid var(--border)",
+    color: "var(--accent)",
+    fontSize: "13px",
+    padding: "6px 12px",
+    borderRadius: "var(--radius)",
+    cursor: "pointer"
+};
+
+const inputStyle = {
+    background: "var(--bg-surface-2)",
+    border: "0.5px solid var(--border)",
+    borderRadius: "var(--radius)",
+    color: "var(--text-primary)",
+    fontSize: "13px",
+    padding: "6px 10px"
+};
 
 export function Projects(){
      const navigate = useNavigate();
@@ -37,8 +62,7 @@ export function Projects(){
               
               
                 setProjects(data);
-            }catch(error){
-                 console.error(error);
+            }catch{      
                  setError("Failed to fetch projects");
             }finally{
                  setLoading(false);
@@ -86,57 +110,65 @@ export function Projects(){
             ]);
             setNewProject("");
 
-         }catch(error){
+         }catch{
              setError("Something went wrong please try again");
-             console.error(error);
+           
          }finally{
              setCreating(false);
          }
     }
     return (
          <div>
-             <div>
-                <h1>Your Projects</h1>
-                <button type = "button" onClick = {handleLogout}>
+             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
+                <h1 style={{ color: "var(--text-primary)", fontSize: "18px", fontWeight: 500, margin: 0 }}>Your Projects</h1>
+                <button type = "button" onClick = {handleLogout} style={buttonStyle}>
                     Log out
                 </button>
              </div>
               
                {error && (
-                  <p>{error}</p>
+                  <p style={{ color: "var(--span-error)", fontSize: "13px" }}>{error}</p>
                )}
                {createdApiKey && (
-                 <div>
-                    <p>
+                 <div style={{ ...cardStyle, marginBottom: "16px" }}>
+                    <p style={{ color: "var(--text-primary)", fontSize: "13px", margin: "0 0 8px" }}>
                         Save this API key now - it will not be shown again:
                     </p>
                    
-                    <code>{createdApiKey}</code>
-                    {"       "}
-                    <button type  = "button" onClick  = {()=> setCreatedApiKey(null)}>
+                    <code style={{ color: "var(--accent)", fontSize: "13px", wordBreak: "break-all" }}>{createdApiKey}</code>
+                    <div style={{ marginTop: "12px" }}>
+                    <button type  = "button" onClick  = {()=> setCreatedApiKey(null)} style={buttonStyle}>
                          Done
                     </button>
+                    </div>
                     </div>
                )}
                 {
                     loading? (
-                        <p>Loading Projects...</p>
+                        <p style={{ color: "var(--text-secondary)" }}>Loading Projects...</p>
                     ): projects.length === 0? (
-                        <p>You don't have any projects yet</p>
+                        <p style={{ color: "var(--text-secondary)" }}>You don't have any projects yet</p>
                     ): (
-                        <ul>
+                        <div  style={{ marginBottom: "20px" }}>
                             {projects.map((project)=>(
-                                 <li key = {project.projectId}>
-                                    <button type = "button" onClick = {()=> navigate(`/projects/${project.projectId}/traces`)}>
-                                        {project.name} ({project.projectId})
-                                    </button>
-                                 </li>
+                                 <div 
+                                  key = {project.projectId}
+                                  onClick={() => navigate(`/projects/${project.projectId}/traces`)}
+                                  style={{ ...cardStyle, marginBottom: "8px", cursor: "pointer" }}
+                                 >
+                                <p style={{ color: "var(--text-primary)", fontSize: "13px", margin: 0 }}>
+                                    {project.name}
+                                </p>
+                                <p style={{ color: "var(--text-muted)", fontSize: "12px", margin: "2px 0 0" }}>
+                                    {project.projectId}
+                                </p>
+                                 </div>
                             ))}
-                        </ul>
+                        </div>
                     )
                 }
-                <form onSubmit = {handelCreateProject}>
-                     <label htmlFor="newProjectName">Project name:</label>
+                <form onSubmit = {handelCreateProject} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                     <label htmlFor="newProjectName" style={{ color: "var(--text-secondary)", fontSize: "13px" }}>Project name:</label>
                      {" "}
                      <input
                       id = "newProjectName"
@@ -145,9 +177,9 @@ export function Projects(){
                       onChange = {(event)=> setNewProject(event.target.value)}
                       placeholder="Project:"
                       required
+                      style = {inputStyle}
                      />
-                     {"    "}
-                     <button type = "submit" disabled = {creating}>
+                     <button type = "submit" disabled = {creating} style={buttonStyle}>
                          {creating? "Creating.." : "Create"}
                      </button>
                      
