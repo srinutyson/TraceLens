@@ -18,7 +18,8 @@ export default defineConfig([
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
     rules : {
-      "no-unsed-vars" : "off"
+      "no-unsed-vars" : "off",
+       "react-hooks/exhaustive-deps": "off"
     }
   },
 ])

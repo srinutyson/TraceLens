@@ -40,4 +40,18 @@ const evalIngestion = async (req,res)=>{
         }
 }
 
+export const getProjectEvaluations = async (req, res) => {
+    try {
+        const projectId = req.projectId;
+        const evaluations = await Eval.find({ projectId }).sort({ createdAt: -1 });
+        return res.status(200).json({ evaluations });
+    }
+    catch (error) {
+        console.error("Get project evaluations error:", error);
+        return res.status(500).json({
+            message: "Internal server error"
+        });
+    }
+};
+
 export default evalIngestion;
