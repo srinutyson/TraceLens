@@ -9,5 +9,5 @@ authrouter.post("/signup" , signupController);
 authrouter.post("/login" , loginController);
 authrouter.post("/logout",logoutController);
 authrouter.post("/verify-otp",otpVerificationLimiter,otpVerificationController);
-authrouter.post("/otp-resend",otpResendLimiter,otpResendController);
+authrouter.post("/resend-otp",otpResendLimiter,otpResendController);
 export default authrouter;
