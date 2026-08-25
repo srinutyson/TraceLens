@@ -1,6 +1,29 @@
 import { useParams } from "react-router-dom";
 import { useState,useEffect } from "react";
 
+  function getSpanColor(span){
+     if(span.status === 'error') return 'var(--span-error)';
+     if(span.type === 'llm_call') return 'var(--span-llm)';
+     if(span.type === 'retrieval') return 'var(--span-retrieval)';
+     if(span.type === 'tool-call') return 'var(--span-tool)';
+     if(span.type === 'custom') return 'var(--span-custom)';
+     return 'var(--span-tool)';
+  }
+  const cardStyle = {
+      background : "var(--bg-surface-2)",
+      border : "0.5px solid var(--border)",
+      borderRadius: 'var(--radius)',
+      padding: '16px'
+  }
+  const buttonStyle = {
+     background: 'transparent',
+     border: '0.5px solid var(--border)',
+     color: 'var(--accent)',
+     fontSize: '13px',
+     padding: '6px 12px',
+     borderRadius: 'var(--radius)',
+     cursor: 'pointer'
+  }
   function processSpanTree(spans){
     if(!spans || spans.length === 0) return[];
     const spanMap = new Map();
@@ -145,9 +168,26 @@ import { useState,useEffect } from "react";
       const endTime = new Date(trace.endTime).getTime();
       const traceDuration = endTime - startTime;
       const processedSpans = processSpanTree(Tracedata.spans);
-
+      const spanTypesPresent = [...new Set(processedSpans.map((span)=> span.type || 'custom'))];
           return (
           <div>
+               <div style = {{marginBottom : '20px', paddingBottom : '16px', borderBottom : '0.5px solid var(--border)'}}>
+                    <div style={{display : 'flex', alignItems : 'center', justifyContent : 'space-between'}}>
+                         <h2 style = {{color : 'var(--text-primary)', fontSize : '16px', fontWeight : 500, margin : 0}}>
+                              {trace.name}
+                         </h2>
+                         <span style={{
+                               color : trace.status === 'error' ? 'var(--span-error)' : 'var(--text-secondary)',
+                               fontSize : '12px'
+                          }}>
+                              {trace.status}
+                         </span>
+                    </div>
+                    <p style = {{color : 'var(--text-muted)', fontSize : '12px', margin : '6px 0 0'}}>
+                         {traceId} · {traceDuration}ms · {processedSpans.length} spans · {new Date(trace.startTime).toLocaleString()}
+                    </p>
+
+               </div>
                 {processedSpans.map((span) =>{
                     const spanStart = new Date(span.startTime).getTime();
                     const spanEnd = new Date(span.endTime).getTime();
@@ -160,10 +200,21 @@ import { useState,useEffect } from "react";
                     
                      return (
 
-                        <div key = {span.spanId} style = {{display : 'flex' , marginBottom : '10px', alignItems : 'center' , height : '40px'  }}>
-                         <div style = {{flexShrink : 0 , width : '200px' , overflow : 'hidden', paddingLeft: `${10 * span.Depth}px`,}}>
+                        <div key = {span.spanId} style = {{display : 'flex' , marginBottom : '6px', alignItems : 'center' , height : '32px'  }}>
+                         <div style = {{
+                              flexShrink : 0 ,
+                              width : '200px' ,
+                              overflow : 'hidden',
+                              paddingLeft: span.Depth?`${16 * span.Depth}px`:'0px',
+                              marginLeft: span.Depth > 0 ? '6px' : '0px',
+                              borderLeft: span.Depth > 0 ? '1px solid var(--border)' : 'none',
+                              color : 'var(--text-primary)',
+                              fontSize : '12px',
+                              whiteSpace : 'nowrap',
+                              textOverflow : 'ellipsis'
+                                 }}>
                                    {span.isOrphan && <span>⚠️</span>}
-                                    <strong>{span.name}</strong>
+                                      {span.name}
                             </div>
                             <div style = {{flexGrow : 1 , position : 'relative' , height : '25px' , backgroundColor:  '#eceff2' , color: "#1E293B"}}>
                                   <div style = {{
@@ -171,8 +222,8 @@ import { useState,useEffect } from "react";
                                      left : `${offset}%`,
                                      width : `${width}%`,
                                      height : '100%',
-                                  backgroundColor: span.status === 'success' ? 'rgb(49, 103, 229)' : '#ef3535',
-                                     borderRadius : '4px',
+                                     backgroundColor: getSpanColor(span),
+                                     borderRadius : '3px',
                                      minWidth : '20px'
                                   }}>
 
@@ -182,89 +233,98 @@ import { useState,useEffect } from "react";
                         </div>
                      );
                 })}
+                <div style = {{display : 'flex', gap : '14px',marginTop : '10px'}}>
+                      {spanTypesPresent.map((type)=>(
+                          <div key={type} style={{display : 'flex', alignItems : 'center', gap : '5px'}}>
+                            <span style = {{
+                               width : '7px',
+                               height : '7px',
+                               borderRadius : '2px',
+                               display : 'inline-block',
+                               backgroundColor : type === 'llm_call' ? 'var(--span-llm)' : type === 'retrieval' ? 'var(--span-retrieval)': type === 'custom' ? 'var(--span-custom)' : 'var(--span-tool)'
+                            }}>
+                            </span>
+                            <span style={{color : 'var(--text-muted)', fontSize : '11px'}}>{type}</span>
+                          </div>
+                      ))}
+                </div>
                  <div style={{marginTop : "30px"}}>
-                        <h2>Evaluations</h2>
-                        <div style = {{marginTop : "10px" , marginBottom : "10px"}}>
-                            <button type = "button" onClick = {()=> handleTriggerEval("rule_based")} disabled = {triggeringRule}>
+                        <h2 style={{color : 'var(--text-primary)', fontSize : '16px', fontWeight : 500}}>Evaluations</h2>
+                        <div style = {{marginTop : "10px" , marginBottom : "10px", display : 'flex', alignItems : 'center', gap : '10px'}}>
+                            <button type = "button" onClick = {()=> handleTriggerEval("rule_based")} disabled = {triggeringRule} style = {buttonStyle}>
                                {triggeringRule ? "Running..." : "Run Rule-Based Evaluation"}
                             </button>
                             {" "}
-                            <button type = "button" onClick = {()=> handleTriggerEval("llm_judge")} disabled = {triggeringLLM}>
+                            <button type = "button" onClick = {()=> handleTriggerEval("llm_judge")} disabled = {triggeringLLM} style = {buttonStyle}>
                                {triggeringLLM ? "Running..." : "Run LLM-Judge Evaluation"}
                             </button>
                           {triggerError && (
-                               <p>{triggerError}</p>
+                               <p style={{color : 'var(--span-error)', fontSize : '13px', margin : 0}}>{triggerError}</p>
                           )}
                         </div>
                         <div style={{marginTop : "20px"}}>
-                             <h2>Rule Based Evaluations</h2>
+                             <h3 style={{color : 'var(--text-primary)', fontSize : '14px', fontWeight : 500}}>Rule Based Evaluations</h3>
                               
-                             {ruleEvals.length == 0 && (<p>No rule-based evaluations available</p>)}
+                             {ruleEvals.length == 0 && (<p style={{color : 'var(--text-secondary)', fontSize : '13px'}}>No rule-based evaluations available</p>)}
                               {ruleEvals.map((ruleEval)=>(
                                    <div key = {ruleEval.evalId}
-                                        style = {{marginTop : "20px" , marginLeft : "10px"}}>
-                                             <h3>
-                                                  Evaluation: {ruleEval.evalId}
-                                             </h3>
+                                       style = {{...cardStyle, marginTop : "12px"}}>
+                                              <p style={{color : 'var(--text-secondary)', fontSize : '12px', margin : '0 0 8px'}}>
+                                                  {ruleEval.evalId}
+                                             </p>
                                              {ruleEval.createdAt && (
-                                                  <p>
-                                                       <strong>Created:</strong>{new Date(ruleEval.createdAt).toLocaleString()}
+                                                  <p style={{color : 'var(--text-muted)', fontSize : '12px'}}>
+                                                       Created: {new Date(ruleEval.createdAt).toLocaleString()}
                                                   </p>
                                              )}
-                                              {ruleEval && ruleEval.status === "pending" && (<p>
+                              {ruleEval && ruleEval.status === "pending" && (<p style={{color : 'var(--text-secondary)', fontSize : '13px'}}>
                                    Waiting to be evaluated.....
                               </p>)}
-                              {ruleEval && ruleEval.status === "scoring" && (<p>
+                              {ruleEval && ruleEval.status === "scoring" && (<p style={{color : 'var(--text-secondary)', fontSize : '13px'}}>
                                     Evaluation in progress
                               </p>)}
                               {ruleEval && ruleEval.status === "failed" && (
-                                    <p>
-                                        <strong>Evaluation Failed:</strong>{" "}
-                                        {ruleEval.reasoning?.summary || "Unknown error"}
+                                    <p style={{color : 'var(--span-error)', fontSize : '13px'}}>
+                                        Evaluation Failed: {ruleEval.reasoning?.summary || "Unknown error"}
                                     </p>
                               )}
                               {ruleEval && ruleEval.status === "completed" &&(
-                                   <div>
-                                        <p>
-                                             <strong>Overall Score:</strong>{" "}
-                                             {ruleEval.score}/100
+                                   <div style={{color : 'var(--text-secondary)', fontSize : '13px'}}>
+                                        <p style={{color : 'var(--text-primary)', fontSize : '15px', fontWeight : 500}}>
+                                             Overall Score: {ruleEval.score}/100
                                         </p>
                                         <p>
-                                              <strong>Quality:</strong>{" "}
-                                             {ruleEval.reasoning?.quality?.score}/100
-                                        <div style = {{marginTop : "20px"}}>
-                                        <strong>Quality Factors:</strong>
+                                              Quality: {ruleEval.reasoning?.quality?.score}/100
+                                        </p>
+                                        <div style = {{marginTop : "10px"}}>
+                                        <strong style={{color : 'var(--text-secondary)'}}>Quality Factors:</strong>
 
                                         {ruleEval.reasoning?.quality?.factors?.map((factor, index) => (
                                              <div key={index} style={{ marginLeft: "10px", marginTop: "8px" }}>
-                                                  <p>
-                                                       <strong>{factor.rule}:</strong>{" "}
-                                                       {factor.detail}
+                                                  <p style={{margin : '0'}}>
+                                                       {factor.rule}: {factor.detail}
                                                   </p>
 
-                                                  <p>
+                                                  <p style={{margin : '2px 0 0'}}>
                                                        Deduction: {factor.deduction}
                                                   </p>
                                              </div>
                                         ))}
                                         </div>
-                                        </p>
-                                        <p>
-                                             <strong>Latency:</strong>{" "}
-                                             {ruleEval.reasoning?.latency?.score}/100             
+                                        <p style={{marginTop : '10px'}}>
+                                             Latency: {ruleEval.reasoning?.latency?.score}/100
                                         </p>
                                         <p style = {{marginLeft : "10px"}}>
                                               {ruleEval.reasoning?.latency?.detail}
                                         </p>
                                         <p>
-                                             <strong>Cost:</strong>{" "}
-                                             {ruleEval.reasoning?.cost?.score}/100
+                                             Cost: {ruleEval.reasoning?.cost?.score}/100
                                         </p>
                                         <p style = {{marginLeft : "10px"}}>
                                               {ruleEval.reasoning?.cost?.detail}
                                            </p>
                                            <p>
-                                             <strong>Summary:</strong>{" "}{ruleEval.reasoning?.summary}
+                                             Summary: {ruleEval.reasoning?.summary}
                                            </p>
                                    </div>
                               )}
@@ -273,80 +333,73 @@ import { useState,useEffect } from "react";
 
                         </div>
                         <div style = {{marginTop : "20px"}}>
-                         <h2>LLM Judge Evaluation</h2>
+                         <h3 style={{color : 'var(--text-primary)', fontSize : '14px', fontWeight : 500}}>LLM Judge Evaluation</h3>
                          {llmEvals.length === 0 && (
-                              <p>
+                              <p style={{color : 'var(--text-secondary)', fontSize : '13px'}}>
                                    No LLM-judge evaluation available
                               </p>
                          )}
                          {llmEvals.map((llmEval)=>(
                               <div key = {llmEval.evalId}
-                                   style = {{marginTop : "20px" , marginLeft : "10px"}}>
-                                        <h3>
-                                             Evaluation: {llmEval.evalId}
-                                        </h3>
-                                        {llmEval.createdAt && (
-                                             <p>
-                                                  <strong>Created:</strong>{" "}
-                                                  {new Date(llmEval.createdAt).toLocaleString()}
+                                   style = {{...cardStyle, marginTop : "12px"}}>
+                                       <p style={{color : 'var(--text-secondary)', fontSize : '12px', margin : '0 0 8px'}}>
+                                             {llmEval.evalId}
+                                        </p>
+                                       {llmEval.createdAt && (
+                                             <p style={{color : 'var(--text-muted)', fontSize : '12px'}}>
+                                                  Created: {new Date(llmEval.createdAt).toLocaleString()}
                                              </p>
                                         )}
-                                         {llmEval && llmEval.status === "pending" && (<p>
+
+                         {llmEval && llmEval.status === "pending" && (<p style={{color : 'var(--text-secondary)', fontSize : '13px'}}>
                                    Waiting to be evaluated.....
                               </p>)}
-                         {llmEval && llmEval.status === "scoring" && (<p>
+                         {llmEval && llmEval.status === "scoring" && (<p style={{color : 'var(--text-secondary)', fontSize : '13px'}}>
                                    Evaluation in progress
                          </p>)}
                          {llmEval && llmEval.status === "failed" && (
-                                   <p>
-                                   <strong>Evaluation Failed</strong>:{" "}
-                                   {llmEval.reasoning?.summary || "Unknown error"}
-                                   </p>
-                         )}
+                                   <p style={{color : 'var(--span-error)', fontSize : '13px'}}>
+                                        Evaluation Failed: {llmEval.reasoning?.summary || "Unknown error"}
+                                        </p>
+                              )}
                          {llmEval && llmEval.status === "completed" &&(
-                              <div>
+                              <div style={{color : 'var(--text-secondary)', fontSize : '13px'}}>
 
-                                  <p>
-                                        <strong>Overall Score:</strong>{" "}
-                                        {llmEval.score}/100
+                                  <p style={{color : 'var(--text-primary)', fontSize : '15px', fontWeight : 500}}>
+                                        Overall Score: {llmEval.score}/100
                                   </p>
                                    <p>
-                                        <strong>Correctness:</strong>{" "}
-                                        {llmEval.reasoning?.correctness?.score}/100
+                                        Correctness: {llmEval.reasoning?.correctness?.score}/100
                                   </p>
-                                   <p>
-                                        Comment:{" "}{llmEval.reasoning?.correctness?.comment}
+                                   <p style={{marginLeft : '10px'}}>
+                                        Comment: {llmEval.reasoning?.correctness?.comment}
                                    </p>
                                   <p>
-                                        <strong>Relevance:</strong>{" "}
-                                        {llmEval.reasoning?.relevance?.score}/100
+                                        Relevance: {llmEval.reasoning?.relevance?.score}/100
                                   </p>
-                                    <p>
-                                        Comment:{" "}{llmEval.reasoning?.relevance?.comment}
+                                    <p style={{marginLeft : '10px'}}>
+                                        Comment: {llmEval.reasoning?.relevance?.comment}
                                     </p>
                                   <p>
-                                        <strong>Completeness:</strong>{" "}
-                                        {llmEval.reasoning?.completeness?.score}/100
+                                        Completeness: {llmEval.reasoning?.completeness?.score}/100
+                                  </p>
+                                  <p style={{marginLeft : '10px'}}>
+                                       Comment: {llmEval.reasoning?.completeness?.comment}
                                   </p>
                                   <p>
-                                       Comment:{" "}{llmEval.reasoning?.completeness?.comment}
+                                        Clarity: {llmEval.reasoning?.clarity?.score}/100
+                                  </p>
+                                  <p style={{marginLeft : '10px'}}>
+                                        Comment: {llmEval.reasoning?.clarity?.comment}
                                   </p>
                                   <p>
-                                        <strong>Clarity:</strong>{" "}
-                                        {llmEval.reasoning?.clarity?.score}/100
+                                        Instruction Following: {llmEval.reasoning?.instructionFollowing?.score}/100
                                   </p>
-                                  <p>
-                                        Comment:{" "}{llmEval.reasoning?.clarity?.comment}
+                                  <p style={{marginLeft : '10px'}}>
+                                       Comment: {llmEval.reasoning?.instructionFollowing?.comment}
                                   </p>
-                                  <p>
-                                        <strong>Instruction Following:</strong>{" "}
-                                        {llmEval.reasoning?.instructionFollowing?.score}/100
-                                  </p>
-                                  <p>
-                                       Comment:{" "}{llmEval.reasoning?.instructionFollowing?.comment}
-                                  </p>
-                                  <p>
-                                       <strong>Summary:</strong>{" "}{llmEval.reasoning?.summary}
+                                  <p style={{marginTop : '10px'}}>
+                                       Summary: {llmEval.reasoning?.summary}
                                   </p>
                               </div>
                          )}
