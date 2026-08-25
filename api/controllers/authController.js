@@ -50,19 +50,16 @@ export const signupController  = async (req,res)=>{
                  }
                 const otp = crypto.randomInt(100000,1000000).toString();
                 const otpHash = await bcrypt.hash(otp,10);
-                existingUser.otpHash = otpHash;
-                existingUser.otpExpiresAt = new Date(Date.now() + (10 * 60 * 1000));
-                existingUser.otpAttempts = 0;
-                await existingUser.save();
-                const {error} = await resend.emails.send({
+
+                  const {error} = await resend.emails.send({
                       from : "onboarding@resend.dev",
                       to : [normalizedEmail],
                       subject : "TraceLens email Verification",
                       html : `
                               <h2>TraceLens Email Verification</h2>
-                              <p>Your verification OTP is:<p>
+                              <p>Your verification OTP is:</p>
                               <h1>${otp}</h1>
-                              <p>This OTP expires in 10 minutes<p>
+                              <p>This OTP expires in 10 minutes</p>
                               `
 
                 });
@@ -72,15 +69,25 @@ export const signupController  = async (req,res)=>{
                          message : "Failed to send verification mail"
                        });
                 }
+
+             
+                existingUser.otpHash = otpHash;
+                existingUser.otpExpiresAt = new Date(Date.now() + (10 * 60 * 1000));
+                existingUser.otpAttempts = 0;
+                await existingUser.save();
                 return res.status(200).json({
                     message : "Verification OTP sent"
                 });
+            }
+              
 
-             }
+             
            const passwordHash = await bcrypt.hash(password,10);
            const otp = crypto.randomInt(100000,1000000).toString();
            const otpHash = await bcrypt.hash(otp,10);
-           const user = new User({
+           let user ;
+           try{
+                user = await User.create({
               email : normalizedEmail,
               passwordHash,
               isVerified : false,
@@ -88,7 +95,12 @@ export const signupController  = async (req,res)=>{
               otpAttempts:0,
               otpExpiresAt : new Date(Date.now() + 10 * 60 *1000)
            });
-           await user.save();
+           }catch(err){
+              if(err.code === 11000){
+                 return res.status(409).json({ message: "User already exists" });
+              }
+              throw err;
+           }
 
            const {error} = await resend.emails.send({
               from : "onboarding@resend.dev",
@@ -96,17 +108,21 @@ export const signupController  = async (req,res)=>{
               subject : "TraceLens email Verification",
               html : `
                         <h2>TraceLens Email Verification</h2>
-                        <p>Your verification OTP is:<p>
+                        <p>Your verification OTP is:</p>
                         <h1>${otp}</h1>
-                        <p>This OTP expires in 10 minutes<p>
+                        <p>This OTP expires in 10 minutes</p>
                         `
            });
            if(error){
               console.error("Resend error" , error);
+               await User.deleteOne({ _id: user._id });
               return res.status(500).json({
                  message : "Failed to send verification email"
               });
            }
+            
+          
+
            return res.status(201).json({
              message : "Signup succesful.Please verify your email using OTP send to you."
            });
@@ -196,7 +212,7 @@ export const logoutController = async(req,res)=>{
 
         }
          res.clearCookie("connect.sid",{
-            httponly : true,
+            httpOnly : true,
             secure : false,
             sameSite : "lax"
          });

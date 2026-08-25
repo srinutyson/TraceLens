@@ -74,6 +74,10 @@ import mongoose, { Mongoose } from 'mongoose'
     type : String ,
     required : true,
     index : true
+   },
+   errorMessage :{
+      type : String,
+      default : null
    }
 
 

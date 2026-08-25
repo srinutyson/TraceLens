@@ -19,7 +19,11 @@ app.use(cors({
 
 
 async function startServer() {
-    await mongoose.connect('mongodb://localhost:27017/tracelens');
+        if (!process.env.MONGODB_URI) {
+          console.error('MONGODB_URI is not set');
+          process.exit(1);
+        }
+      await mongoose.connect(process.env.MONGODB_URI);
 
     console.log('MongoDB connected');
     app.use(

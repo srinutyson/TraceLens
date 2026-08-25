@@ -8,18 +8,38 @@ import mongoose from "mongoose";
     if(!spanData || typeof spanData !== "object" || Array.isArray(spanData)){
         return res.status(400).json({
         message : "Request body must be a JSON object"
-            });
+        });
         }
-    if(!spanData.traceId){
+    if(!spanData.traceId || typeof spanData.traceId !== "string"){
         return res.status(400).json({
-        message : "traceId is required"
-            });
+            message : "traceId is required and must be a string" 
+        });
         }
+    if(!spanData.spanId || typeof spanData.spanId !== "string"){
+        return res.status(400).json({ 
+            message : "spanId is required and must be a string"
+         });
+    }
+    if(typeof spanData.startTime !== "number" || typeof spanData.endTime !== "number"){
+        return res.status(400).json({ 
+            message : "startTime and endTime must be numbers" 
+        });
+    }
+    if(spanData.endTime < spanData.startTime){
+        return res.status(400).json({
+             message : "endTime cannot precede startTime" 
+        });
+    }
+    if(spanData.parentSpanId !== null && spanData.parentSpanId !== undefined && typeof spanData.parentSpanId !== "string"){
+        return res.status(400).json({ 
+            message : "parentSpanId must be a string or null" 
+        });
+    }
 
     const  projectId = req.projectId;
     spanData.projectId = projectId;
     await Span.create(spanData);
-    const isRoot = spanData.parentSpanId === null;
+   const isRoot = spanData.parentSpanId === null || spanData.parentSpanId === undefined;
 
     const updatequery = {
         $inc : {
