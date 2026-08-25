@@ -1,13 +1,25 @@
 {
-  "name": "sdk",
+  "name": "tracelens-sdk",
   "version": "1.0.0",
-  "description": "",
+  "description": "Lightweight tracing SDK for TraceLens - capture nested spans and traces for LLM and agent applications.",
+  "type": "module",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
+  "files": [
+    "index.js",
+    "exporter.js"
+  ],
+  "keywords": [
+    "observability",
+    "tracing",
+    "llm",
+    "ai",
+    "agent",
+    "tracelens"
+  ],
   "author": "",
-  "license": "ISC",
-  "type": "module"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/srinutyson/TraceLens.git"
+  }
 }

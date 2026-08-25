@@ -18,6 +18,20 @@ const buttonStyle = {
     cursor: "pointer"
 };
 
+const codeBlockStyle = {
+    background: "var(--bg-base)",
+    border: "0.5px solid var(--border)",
+    borderRadius: "var(--radius)",
+    color: "var(--text-primary)",
+    fontSize: "12px",
+    padding: "10px 12px",
+    overflowX: "auto",
+    whiteSpace: "pre",
+    marginTop: "8px",
+    marginBottom: "8px"
+};
+
+
 const inputStyle = {
     background: "var(--bg-surface-2)",
     border: "0.5px solid var(--border)",
@@ -185,7 +199,25 @@ export function Projects(){
                      
                      
                 </form>
-                   
+                    <div style={{ ...cardStyle, marginTop: "20px" }}>
+                <h2 style={{ color: "var(--text-primary)", fontSize: "14px", fontWeight: 500, margin: "0 0 8px" }}>
+                    Using the SDK
+                </h2>
+                <p style={{ color: "var(--text-secondary)", fontSize: "13px", margin: "0 0 8px" }}>
+                    Create a project above to get your API key, then install the SDK in your own app:
+                </p>
+                <pre style={codeBlockStyle}>npm install tracelens-sdk</pre>
+                <pre style={codeBlockStyle}>{`import { TraceLens } from 'tracelens-sdk';
+
+const tracer = new TraceLens({ apiKey: 'your_project_api_key' });
+
+await tracer.trace('My-Workflow', async () => {
+  await tracer.startSpan('Step-One', 'custom', async (childData) => {
+    childData({ output: 'result' });
+    return 'result';
+  });
+});`}</pre>
+            </div>
                 
                
          </div>
