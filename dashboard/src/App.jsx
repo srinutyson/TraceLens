@@ -6,7 +6,7 @@ import { VerifyOtp } from "./pages/VerifyOtp.jsx";
 import { Login } from "./pages/Login.jsx";
 import { Projects } from "./pages/Projects.jsx";
 import Layout from "./components/Layout.jsx";
-import { Evaluations } from "./pages/evaluations.jsx";
+import { Evaluations } from "./pages/Evaluations.jsx";
 import { ApiKeys } from "./pages/ApiKeys.jsx";
 
 

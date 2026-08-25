@@ -60,7 +60,7 @@ export function ApiKeys(){
                 credentials : "include"
             });
 
-            const data = response.json();
+            const data = await response.json();
 
            if (!response.ok) {
                 setError(data.message || "Could not regenerate key");
@@ -112,8 +112,17 @@ export function ApiKeys(){
                         {newApiKey}
                     </code>
                     <div style={{ marginTop: "12px" }}>
-                        <button type="button" onClick={() => setNewApiKey(null)}>
-                            Done, I've saved it
+                        <button type="button" onClick={() => setNewApiKey(null)}
+                            style={{
+                            background: "transparent",
+                            border: "0.5px solid var(--border)",
+                            color: "green",
+                            fontSize: "13px",
+                            padding: "6px 12px",
+                            borderRadius: "var(--radius)",
+                            cursor: "pointer"
+                        }}>
+                            Done
                         </button>
                     </div>
                 </div>

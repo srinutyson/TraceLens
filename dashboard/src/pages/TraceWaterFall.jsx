@@ -75,6 +75,7 @@ import { useState,useEffect } from "react";
     const [triggeringRule , setTrigerringRule] = useState(false);
     const  [triggeringLLM , setTriggeringLLM] = useState(false);
     const [triggerError , setTriggerError] = useState("");
+    const [selectedSpan , setSelectedSpan] = useState(null);
 
    const fetchTrace = async () =>{
               try{
@@ -186,7 +187,10 @@ import { useState,useEffect } from "react";
                     <p style = {{color : 'var(--text-muted)', fontSize : '12px', margin : '6px 0 0'}}>
                          {traceId} · {traceDuration}ms · {processedSpans.length} spans · {new Date(trace.startTime).toLocaleString()}
                     </p>
-
+                     <p style = {{color : 'var(--text-muted)', fontSize : '12px', margin : '4px 0 0'}}>
+                         {trace.totalTokens} tokens · ${trace.totalCost.toFixed(4)}
+                         
+                    </p>
                </div>
                 {processedSpans.map((span) =>{
                     const spanStart = new Date(span.startTime).getTime();
@@ -200,7 +204,7 @@ import { useState,useEffect } from "react";
                     
                      return (
 
-                        <div key = {span.spanId} style = {{display : 'flex' , marginBottom : '6px', alignItems : 'center' , height : '32px'  }}>
+                        <div key = {span.spanId} onClick = {()=>setSelectedSpan(span)}style = {{display : 'flex' , marginBottom : '6px', alignItems : 'center' , height : '32px'  }}>
                          <div style = {{
                               flexShrink : 0 ,
                               width : '200px' ,
@@ -233,6 +237,69 @@ import { useState,useEffect } from "react";
                         </div>
                      );
                 })}
+               {selectedSpan && (
+                    <div style = {{
+                         position : 'fixed',
+                         top : 0,
+                         right : 0,
+                         height : '100vh',
+                         width : '380px',
+                         background : 'var(--bg-surface-2)',
+                         borderLeft : '0.5px solid var(--border)',
+                         padding : '20px',
+                         overflowY : 'auto',
+                         zIndex : 100
+                    }}>
+                         <div style = {{display : 'flex', justifyContent : 'space-between', alignItems : 'center', marginBottom : '16px'}}>
+                              <h3 style = {{color : 'var(--text-primary)', fontSize : '14px', margin : 0}}>
+                                   {selectedSpan.name}
+                              </h3>
+                              <button type = "button" onClick = {() => setSelectedSpan(null)} style = {buttonStyle}>
+                                   Close
+                              </button>
+                         </div>
+
+                         <p style = {{color : getSpanColor(selectedSpan), fontSize : '12px', marginBottom : '4px'}}>
+                              {selectedSpan.type} · {selectedSpan.status}
+                         </p>
+                         <p style = {{color : 'var(--text-muted)', fontSize : '12px', marginBottom : '16px'}}>
+                              {new Date(selectedSpan.endTime) - new Date(selectedSpan.startTime)}ms
+                         </p>
+
+                         {selectedSpan.status === 'error' && selectedSpan.errorMessage && (
+                              <div style = {{marginBottom : '16px'}}>
+                                   <p style = {{color : 'var(--span-error)', fontSize : '12px', fontWeight : 600}}>Error</p>
+                                   <p style = {{color : 'var(--text-primary)', fontSize : '12px'}}>{selectedSpan.errorMessage}</p>
+                              </div>
+                         )}
+
+                         {selectedSpan.model && (
+                              <p style = {{color : 'var(--text-secondary)', fontSize : '12px', marginBottom : '16px'}}>
+                                   Model: {selectedSpan.model}
+                                   {selectedSpan.tokens?.total && ` · ${selectedSpan.tokens.total} tokens`}
+                                   {selectedSpan.cost != null && ` · $${selectedSpan.cost.toFixed(4)}`}
+                              </p>
+                         )}
+
+                         {selectedSpan.input && (
+                              <div style = {{marginBottom : '16px'}}>
+                                   <p style = {{color : 'var(--text-secondary)', fontSize : '12px', fontWeight : 600, marginBottom : '4px'}}>Input</p>
+                                   <pre style = {{color : 'var(--text-primary)', fontSize : '11px', whiteSpace : 'pre-wrap', wordBreak : 'break-word', background : 'var(--bg-surface-1)', padding : '8px', borderRadius : 'var(--radius)'}}>
+                                        {typeof selectedSpan.input === 'string' ? selectedSpan.input : JSON.stringify(selectedSpan.input, null, 2)}
+                                   </pre>
+                              </div>
+                         )}
+
+                         {selectedSpan.output && (
+                              <div>
+                                   <p style = {{color : 'var(--text-secondary)', fontSize : '12px', fontWeight : 600, marginBottom : '4px'}}>Output</p>
+                                   <pre style = {{color : 'var(--text-primary)', fontSize : '11px', whiteSpace : 'pre-wrap', wordBreak : 'break-word', background : 'var(--bg-surface-1)', padding : '8px', borderRadius : 'var(--radius)'}}>
+                                        {typeof selectedSpan.output === 'string' ? selectedSpan.output : JSON.stringify(selectedSpan.output, null, 2)}
+                                   </pre>
+                              </div>
+                         )}
+    </div>
+)}
                 <div style = {{display : 'flex', gap : '14px',marginTop : '10px'}}>
                       {spanTypesPresent.map((type)=>(
                           <div key={type} style={{display : 'flex', alignItems : 'center', gap : '5px'}}>
