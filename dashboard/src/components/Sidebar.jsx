@@ -1,5 +1,5 @@
 import { NavLink, useParams } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 function Sidebar() {
     const { projectId } = useParams();
 
@@ -32,17 +32,19 @@ function Sidebar() {
             minHeight: "100vh",
             boxSizing: "border-box"
         }}>
-            <div style={{
+            <Link  to = "/projects" style={{
                 display: "flex",
                 alignItems: "center",
                 gap: "8px",
                 marginBottom: "24px",
-                padding: "0 4px"
+                padding: "0 4px",
+                textDecoration : "none",
+                cursor : "pointer"
             }}>
                 <span style={{ color: "var(--text-primary)", fontSize: "14px", fontWeight: 500 }}>
                     TraceLens
                 </span>
-            </div>
+            </Link>
 
             <NavLink to={tracesTo} style={navItemStyle}>
                 Traces
