@@ -14,7 +14,8 @@ npm install tracelens-sdk
 import { TraceLens } from 'tracelens-sdk';
 
 const tracer = new TraceLens({
-  apiKey: 'tl_your_project_api_key'
+  apiKey: 'tl_your_project_api_key',
+  ingestUrl: 'https://your-tracelens-backend.example.com/api/ingest'
 });
 
 await tracer.trace('My-Workflow', async () => {
@@ -27,12 +28,20 @@ await tracer.trace('My-Workflow', async () => {
 
   await tracer.startSpan('Call-LLM', 'llm_call', async (childData) => {
     const answer = 'the answer';
-    childData({ input: result, output: answer, model: 'gemini-2.5-flash' });
+    childData({ input: result, output: answer, model: 'gemini-3.6-flash' });
     return answer;
   });
 
 });
 ```
+
+## Self-hosted: the `ingestUrl` option
+
+TraceLens is self-hosted — there is no single shared API endpoint, since every user runs their own backend instance. You must tell the SDK where your own deployed TraceLens backend lives using the `ingestUrl` option, as shown above.
+
+If `ingestUrl` is omitted, the SDK defaults to `http://localhost:4000/api/ingest` — convenient for local development, but **spans will fail silently in production** if you forget to set this explicitly when deploying your instrumented application.
+
+The correct value for your deployment is shown automatically, pre-filled, in the code snippet on your TraceLens dashboard's Projects page whenever you create or view a project.
 
 ## Span types
 

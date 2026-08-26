@@ -42,6 +42,8 @@ const inputStyle = {
     padding: "6px 10px"
 };
 
+const ingestUrl = `${API_BASE}/ingest`;
+
 export function Projects(){
      const navigate = useNavigate();
 
@@ -151,6 +153,20 @@ export function Projects(){
                     </p>
                    
                     <code style={{ color: "var(--accent)", fontSize: "13px", wordBreak: "break-all" }}>{createdApiKey}</code>
+                    <p style={{ color: "var(--text-primary)", fontSize: "13px", margin: "16px 0 0", fontWeight: 500 }}>
+                        Get started
+                    </p>
+                    <pre style={codeBlockStyle}>npm install tracelens-sdk</pre>
+                    <pre style={codeBlockStyle}>{`import { TraceLens } from 'tracelens-sdk';
+
+                    const tracer = new TraceLens({ apiKey: '${createdApiKey}', ingestUrl: '${ingestUrl}' });
+
+                    await tracer.trace('My-Workflow', async () => {
+                    await tracer.startSpan('Step-One', 'custom', async (childData) => {
+                        childData({ output: 'result' });
+                        return 'result';
+                    });
+                    });`}</pre>
                     <div style={{ marginTop: "12px" }}>
                     <button type  = "button" onClick  = {()=> setCreatedApiKey(null)} style={buttonStyle}>
                          Done
@@ -210,7 +226,7 @@ export function Projects(){
                 <pre style={codeBlockStyle}>npm install tracelens-sdk</pre>
                 <pre style={codeBlockStyle}>{`import { TraceLens } from 'tracelens-sdk';
 
-const tracer = new TraceLens({ apiKey: 'your_project_api_key' });
+const tracer = new TraceLens({ apiKey: 'your_project_api_key', ingestUrl: '${ingestUrl}' });
 
 await tracer.trace('My-Workflow', async () => {
   await tracer.startSpan('Step-One', 'custom', async (childData) => {

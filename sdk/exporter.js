@@ -1,5 +1,5 @@
-export const exporter = (spanData,apiKey)=>{
-    fetch('http://localhost:4000/api/ingest',{
+export const exporter = (spanData,apiKey,ingestUrl = 'http://localhost:4000/api/ingest')=>{
+    fetch(ingestUrl,{
         method : 'POST',
        headers :{
          'Content-type' : 'application/json',

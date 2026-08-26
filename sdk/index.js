@@ -1,14 +1,14 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { error } from 'node:console';
 import { randomUUID } from 'node:crypto';
-import { json } from 'node:stream/consumers';
 import { exporter } from './exporter.js';
+
+
 const asyncLocalStorage = new  AsyncLocalStorage();
 
 export class TraceLens{
     constructor(config = {}){
-        this.projectId = config.projectId;
         this.apiKey = config.apiKey;
+        this.ingestUrl = config.ingestUrl || 'http://localhost:4000/api/ingest';
     }
     async trace(name,fn){
      const traceId = randomUUID();
@@ -38,8 +38,8 @@ export class TraceLens{
         status : 'success',
         input : null,
         output : null,
-        errorMessage : null,
-        projectId : this.projectId
+        errorMessage : null
+      
      };
    const childContext = {
       traceId : store.traceId,
@@ -58,7 +58,7 @@ export class TraceLens{
         });
       spanPayload.endTime = Date.now();
       spanPayload.status = 'success';
-      exporter(spanPayload,this.apiKey);
+      exporter(spanPayload,this.apiKey,this.ingestUrl);
       return result ;
 
    }
@@ -67,7 +67,7 @@ export class TraceLens{
          spanPayload.status = 'error';
          spanPayload.errorMessage = error.message;
       
-         exporter(spanPayload,this.apiKey);
+         exporter(spanPayload,this.apiKey,this.ingestUrl);
          throw error;
    }
     }
