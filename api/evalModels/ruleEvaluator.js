@@ -13,7 +13,7 @@ function getDeduction(span){
 }
 
 export function ruleEvaluator(trace , spans){
-        const reasoningParts = []; 
+       
         let latencyScore = 100;
         let qualityScore = 100;
         let costScore = 100;

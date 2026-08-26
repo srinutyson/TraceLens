@@ -3,7 +3,6 @@ import Trace from '../models/trace.js';
 import Span from '../models/span.js';
 import  {ruleEvaluator} from '../evalModels/ruleEvaluator.js';
 import  {llmEvaluator} from '../evalModels/llmEvaluator.js'
-import mongoose from "mongoose";
 import "dotenv/config";
 
 async function completeEvaluation(claimedEval , evaluation) {
@@ -43,7 +42,7 @@ export async function claimWork(){
     const staleTime = new Date(now.getTime() - 5 * 60 * 1000);
   
 
-    const pending = await Eval.find({ status: "pending" });
+   
     const workEval = await Eval.findOneAndUpdate({
           $or : [
                  {status : "pending"},
@@ -99,11 +98,14 @@ async function processEvaluation(claimedEval){
 }
 
 export async function startEvalWorker(){
-      let count = 0;
+      
     while(true){
          try{
 
           const result =   await claimWork();
+          if(result){
+          console.log(`Eval worker: claimed and ${result.status} eval ${result.evalId}`);
+          }
          
          }
          catch(error){

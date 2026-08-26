@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_BASE , PUBLIC_API_BASE } from "../api";
+import { API_BASE , PUBLIC_API_BASE } from "../api.js";
 
 const cardStyle = {
     background: "var(--bg-surface-2)",

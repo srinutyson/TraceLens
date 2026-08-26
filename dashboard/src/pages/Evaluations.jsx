@@ -1,6 +1,6 @@
 import { useState , useEffect } from "react";
 import { useParams , useNavigate } from "react-router-dom";
-import { API_BASE } from "../api";
+import { API_BASE } from "../api.js";
 export function Evaluations(){
       const {projectId} = useParams();
       const navigate = useNavigate();

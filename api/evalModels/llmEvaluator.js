@@ -5,7 +5,7 @@ import 'dotenv/config';
 const ai = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY
 });
-const models = await ai.models.list();
+
  function getLLMData(spans){
       const llmSpans = spans.filter(span => 
         span.type === "llm_call"&&
@@ -170,7 +170,8 @@ export async function llmEvaluator(spans){
         judgement = JSON.parse(response.text);
     }
     catch(error){
-        throw new Error("LLM judge returned ans invalid JSON. ");
+        console.error("LLM judge JSON parse failed:", error.message, "Raw response:", response.text);
+        throw new Error("LLM judge returned an invalid JSON. ");
     }
 
     const dimensions = [

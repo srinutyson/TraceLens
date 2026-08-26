@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate , useLocation  } from "react-router-dom";
-import { API_BASE } from "../api";
+import { API_BASE } from "../api.js";
 
 const wordmarkStyle = {
     textAlign: "center",

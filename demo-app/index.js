@@ -5,7 +5,8 @@ import { synthesizeAnswer, MODEL_NAME } from './llm.js';
 import 'dotenv/config';
 
 const tracer = new TraceLens({
-  apiKey: process.env.TRACELENS_PROJECT_API_KEY
+  apiKey: process.env.TRACELENS_PROJECT_API_KEY,
+  ingestUrl :  'https://tracelens-3uqc.onrender.com/api/ingest'
 });
 
 const userQuestion = "What's included in the Pro plan and is the API up right now?";

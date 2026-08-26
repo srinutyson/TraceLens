@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useState,useEffect } from "react";
-import { API_BASE } from "../api";
+import { API_BASE } from "../api.js";
   function getSpanColor(span){
      if(span.status === 'error') return 'var(--span-error)';
      if(span.type === 'llm_call') return 'var(--span-llm)';

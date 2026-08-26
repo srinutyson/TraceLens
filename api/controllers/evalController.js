@@ -4,7 +4,7 @@ import { randomUUID } from "node:crypto";
 
 
 
-const evalIngestion = async (req,res)=>{
+export const evalIngestion = async (req,res)=>{
         try{
             const projectId  = req.projectId;
             const traceId = req.params.traceId;
@@ -54,4 +54,3 @@ export const getProjectEvaluations = async (req, res) => {
     }
 };
 
-export default evalIngestion;
