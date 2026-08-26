@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_BASE } from "../api";
+import { API_BASE , PUBLIC_API_BASE } from "../api";
 
 const cardStyle = {
     background: "var(--bg-surface-2)",
@@ -42,7 +42,7 @@ const inputStyle = {
     padding: "6px 10px"
 };
 
-const ingestUrl = `${API_BASE}/ingest`;
+const ingestUrl = `${PUBLIC_API_BASE}/ingest`;
 
 export function Projects(){
      const navigate = useNavigate();
