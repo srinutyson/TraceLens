@@ -1,4 +1,4 @@
-import {BrowserRouter , Routes , Route} from "react-router-dom";
+import {BrowserRouter , Routes , Route , Navigate} from "react-router-dom";
 import  TraceList from "./pages/TraceList.jsx";
 import  TraceWaterFall from "./pages/TraceWaterFall.jsx";
 import { Signup } from "./pages/Signup.jsx";
@@ -17,6 +17,7 @@ function App(){
            <BrowserRouter>
            <Routes>
 
+            <Route path="/" element={<Navigate to="/login" replace />}></Route>
 
             <Route path = "/signup" element = {<Signup/>}></Route>
 

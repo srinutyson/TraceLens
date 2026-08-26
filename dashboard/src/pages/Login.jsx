@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useState , useEffect} from 'react';
 import { useNavigate , useLocation } from 'react-router-dom';
 import { API_BASE } from '../api.js';
 const wordmarkStyle = {
@@ -79,7 +79,16 @@ export function Login(){
     const [error , setError] = useState("");
     const [loading , setLoading] = useState(false);
 
-
+  useEffect(() => {
+        fetch(`${API_BASE}/projects`, { credentials: "include" })
+            .then((response) => {
+                if (response.ok) {
+                    navigate("/projects");
+                }
+            })
+            .catch(() => {});
+    }, []);
+    
   const handleLogin = async(event)=>{
        event.preventDefault();
        setError("");
