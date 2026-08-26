@@ -156,6 +156,11 @@ export function Login(){
                 style = {inputStyle}
                 />
             </div>
+                <div style={{ textAlign: "right", marginBottom: "14px" }}>
+                        <button type="button" style={{ ...linkButtonStyle, marginTop: 0, fontSize: "12px" }} onClick={() => navigate("/forgot-password")}>
+                            Forgot password?
+                        </button>
+                </div>
              {error && (
                     <p style={{ color: "var(--span-error)", fontSize: "13px" }}>{error}</p>
                 )}

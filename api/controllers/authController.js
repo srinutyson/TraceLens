@@ -367,3 +367,137 @@ export const otpResendController = async(req,res)=>{
         });
      }
 }
+
+export const forgotPassword = async (req, res) => {
+    try {
+        const email = req.body.email;
+        if (!email || typeof email !== "string") {
+            return res.status(400).json({
+                message: "Invalid email"
+            });
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const normalizedEmail = email.trim().toLowerCase();
+        if (!emailRegex.test(normalizedEmail)) {
+            return res.status(400).json({
+                message: "Invalid email format"
+            });
+        }
+
+        const genericMessage = "If an account exists for this email, a reset code has been sent.";
+
+        const user = await User.findOne({ email: normalizedEmail });
+        if (!user || !user.isVerified) {
+            return res.status(200).json({
+                message: genericMessage
+            });
+        }
+
+        const otp = crypto.randomInt(100000, 1000000).toString();
+        const otpHash = await bcrypt.hash(otp, 10);
+
+        const { error } = await resend.emails.send({
+            from: "onboarding@resend.dev",
+            to: [normalizedEmail],
+            subject: "TraceLens Password Reset",
+            html: `
+                    <h2>TraceLens Password Reset</h2>
+                    <p>Your password reset code is:</p>
+                    <h1>${otp}</h1>
+                    <p>This code expires in 10 minutes</p>
+                    `
+        });
+
+        if (error) {
+            console.error("Resend error (forgot password):", error);
+            return res.status(200).json({
+                message: genericMessage
+            });
+        }
+
+        user.resetOtpHash = otpHash;
+        user.resetOtpExpiresAt = new Date(Date.now() + (10 * 60 * 1000));
+        user.resetOtpAttempts = 0;
+        await user.save();
+
+        return res.status(200).json({
+            message: genericMessage
+        });
+
+    } catch (error) {
+        console.error("Forgot password error:", error);
+        return res.status(500).json({
+            message: "Internal server error"
+        });
+    }
+};
+
+export const resetPassword = async (req, res) => {
+    try {
+        const { email, otp, newPassword } = req.body;
+
+        if (!email || !otp || !newPassword) {
+            return res.status(400).json({
+                message: "Email, OTP, and new password are required"
+            });
+        }
+        if (typeof email !== "string" || typeof otp !== "string" || typeof newPassword !== "string") {
+            return res.status(400).json({
+                message: "Invalid input types"
+            });
+        }
+        if (newPassword.length < 8) {
+            return res.status(400).json({
+                message: "New password must be at least 8 characters long"
+            });
+        }
+
+        const normalizedEmail = email.trim().toLowerCase();
+        const user = await User.findOne({ email: normalizedEmail });
+
+        if (!user || !user.resetOtpHash) {
+            return res.status(400).json({
+                message: "Invalid or expired reset code"
+            });
+        }
+
+        const otpExpired = !user.resetOtpExpiresAt || user.resetOtpExpiresAt.getTime() <= Date.now();
+        if (otpExpired) {
+            return res.status(400).json({
+                message: "Invalid or expired reset code"
+            });
+        }
+
+        if (user.resetOtpAttempts >= 5) {
+            return res.status(429).json({
+                message: "Too many attempts. Please request a new code."
+            });
+        }
+
+        const isMatch = await bcrypt.compare(otp, user.resetOtpHash);
+        if (!isMatch) {
+            user.resetOtpAttempts += 1;
+            await user.save();
+            return res.status(401).json({
+                message: "Invalid or expired reset code"
+            });
+        }
+
+        user.passwordHash = await bcrypt.hash(newPassword, 10);
+        user.resetOtpHash = null;
+        user.resetOtpExpiresAt = null;
+        user.resetOtpAttempts = 0;
+        await user.save();
+
+        return res.status(200).json({
+            message: "Password reset successful. Please log in with your new password."
+        });
+
+    } catch (error) {
+        console.error("Reset password error:", error);
+        return res.status(500).json({
+            message: "Internal server error"
+        });
+    }
+};

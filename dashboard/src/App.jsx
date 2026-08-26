@@ -8,6 +8,8 @@ import { Projects } from "./pages/Projects.jsx";
 import Layout from "./components/Layout.jsx";
 import { Evaluations } from "./pages/Evaluations.jsx";
 import { ApiKeys } from "./pages/ApiKeys.jsx";
+import { ForgotPassword } from "./pages/ForgotPassword.jsx";
+import { ResetPassword } from "./pages/ResetPassword.jsx";
 
 
 
@@ -24,6 +26,10 @@ function App(){
             <Route path = "/verify-otp" element = {<VerifyOtp/>}></Route>
 
             <Route path = "/login" element = {<Login/>} ></Route>
+             
+            <Route path="/forgot-password" element={<ForgotPassword />}></Route>
+            
+            <Route path="/reset-password" element={<ResetPassword />}></Route>
 
             <Route element  = {<Layout/>}>
                   <Route path = "/projects/:projectId/traces" element = {<TraceList/>}></Route>
