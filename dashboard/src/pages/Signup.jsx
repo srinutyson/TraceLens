@@ -1,5 +1,6 @@
 import { useState} from "react";
 import { useNavigate } from "react-router-dom";
+import { API_BASE } from "../api";
 
 const wordmarkStyle = {
     textAlign: "center",
@@ -81,7 +82,7 @@ export function Signup(){
            setError("");
            setLoading(true);
            try{
-              const response = await fetch("http://localhost:4000/api/auth/signup",{
+              const response = await fetch(`${API_BASE}/auth/signup`,{
                    method : "POST",
                    credentials : "include",
                    headers :{

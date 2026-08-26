@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate , useLocation  } from "react-router-dom";
-
+import { API_BASE } from "../api";
 
 const wordmarkStyle = {
     textAlign: "center",
@@ -103,7 +103,7 @@ export function VerifyOtp(){
         setResendMessage("");
         setLoading(true);
         try{
-            const response = await fetch("http://localhost:4000/api/auth/verify-otp",{
+            const response = await fetch(`${API_BASE}/auth/verify-otp`,{
                   method : "POST",
                   credentials : "include",
                   headers :{"Content-Type" : "application/json"},
@@ -131,7 +131,7 @@ export function VerifyOtp(){
        setResendMessage("");
        setResendLoading(true);
        try{
-            const response = await fetch("http://localhost:4000/api/auth/resend-otp",{
+            const response = await fetch(`${API_BASE}/auth/resend-otp`,{
                   method : "POST",
                   headers : {"Content-Type" : "application/json"},
                   credentials : "include",

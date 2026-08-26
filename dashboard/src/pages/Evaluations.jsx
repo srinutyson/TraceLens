@@ -1,6 +1,6 @@
 import { useState , useEffect } from "react";
 import { useParams , useNavigate } from "react-router-dom";
-
+import { API_BASE } from "../api";
 export function Evaluations(){
       const {projectId} = useParams();
       const navigate = useNavigate();
@@ -15,7 +15,7 @@ export function Evaluations(){
              setError("");
 
              try{
-                 const response = await fetch(`http://localhost:4000/api/projects/${projectId}/evaluations`,{
+                 const response = await fetch(`${API_BASE}/projects/${projectId}/evaluations`,{
                       credentials : "include",
                       headers : {
                           "Content-Type" : "application/json"

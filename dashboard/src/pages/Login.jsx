@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import { useNavigate , useLocation } from 'react-router-dom';
-
+import { API_BASE } from '../api';
 const wordmarkStyle = {
     textAlign: "center",
     marginBottom: "100px",
@@ -85,7 +85,7 @@ export function Login(){
        setError("");
        setLoading(true);
        try{
-          const response = await fetch("http://localhost:4000/api/auth/login",{
+          const response = await fetch(`${API_BASE}/auth/login`,{
               method : "POST",
               credentials : "include",
               headers : {"Content-Type" : "application/json"},

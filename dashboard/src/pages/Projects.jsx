@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_BASE } from "../api";
 
 const cardStyle = {
     background: "var(--bg-surface-2)",
@@ -58,7 +59,7 @@ export function Projects(){
             setLoading(true);
             setError("");
             try{
-             const response = await fetch("http://localhost:4000/api/projects",{
+             const response = await fetch(`${API_BASE}/projects`,{
                 method : "GET",
                 credentials : "include"
              });
@@ -87,7 +88,7 @@ export function Projects(){
   const handleLogout = async()=>{
     
         try{
-             await fetch("http://localhost:4000/api/auth/logout",
+             await fetch(`${API_BASE}/auth/logout`,
                 {
                     method : "POST",
                     credentials : "include"
@@ -105,7 +106,7 @@ export function Projects(){
          setError("");
          setCreating(true);
          try{
-            const response = await fetch("http://localhost:4000/api/projects",{
+            const response = await fetch(`${API_BASE}/projects`,{
                  method : "POST",
                  headers : {"Content-Type" : "application/json"},
                  credentials : "include",

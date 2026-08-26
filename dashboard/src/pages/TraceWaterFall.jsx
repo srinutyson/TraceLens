@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useState,useEffect } from "react";
-
+import { API_BASE } from "../api";
   function getSpanColor(span){
      if(span.status === 'error') return 'var(--span-error)';
      if(span.type === 'llm_call') return 'var(--span-llm)';
@@ -79,7 +79,7 @@ import { useState,useEffect } from "react";
 
    const fetchTrace = async () =>{
               try{
-                const response = await fetch(`http://localhost:4000/api/projects/${projectId}/traces/${traceId}`,{
+                const response = await fetch(`${API_BASE}/projects/${projectId}/traces/${traceId}`,{
                     credentials : "include",
                      headers :{
                         "Content-Type" : "application/json"
@@ -100,7 +100,7 @@ import { useState,useEffect } from "react";
 
     useEffect(() =>{
          
-
+      // eslint-disable-next-line react-hooks/set-state-in-effect
          fetchTrace();
 
 
@@ -115,7 +115,7 @@ import { useState,useEffect } from "react";
              else setTriggeringLLM(true);
 
              try{
-               const response = await fetch(`http://localhost:4000/api/projects/${projectId}/traces/${traceId}/eval`,{
+               const response = await fetch(`${API_BASE}/projects/${projectId}/traces/${traceId}/eval`,{
                     method : "POST",
                     headers : {"Content-Type" : "application/json"},
                     credentials : "include",

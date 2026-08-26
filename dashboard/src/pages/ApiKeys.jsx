@@ -1,6 +1,6 @@
 import { useState , useEffect } from "react";
 import {useParams ,useNavigate} from 'react-router-dom';
-
+import { API_BASE } from "../api";
 
 export function ApiKeys(){
     const {projectId} = useParams();
@@ -18,7 +18,7 @@ export function ApiKeys(){
              setLoading(true);
              setError("");
              try{
-                const response = await fetch(`http://localhost:4000/api/projects/${projectId}`,{
+                const response = await fetch(`${API_BASE}/projects/${projectId}`,{
                     credentials : "include",
                     headers : {
                         "Content-Type" : "application/json"
@@ -52,7 +52,7 @@ export function ApiKeys(){
         setRegenerating(true);
 
         try{
-            const response = await fetch(`http://localhost:4000/api/projects/${projectId}/regenerate-key`,{
+            const response = await fetch(`${API_BASE}/projects/${projectId}/regenerate-key`,{
                 method : "POST",
                 headers :{
                     "Content-Type" : "application/json"

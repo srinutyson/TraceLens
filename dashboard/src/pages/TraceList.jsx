@@ -1,7 +1,7 @@
 import { useState , useEffect } from "react";
 import  Trace  from "./TraceItem.jsx";
 import { useParams,useNavigate } from "react-router-dom";
-
+import { API_BASE } from "../api.js";
  const inputStyle = {
     background: "var(--bg-surface-2)",
     border: "0.5px solid var(--border)",
@@ -33,7 +33,7 @@ const filterButtonStyle = (active) => ({
      useEffect(() =>{
          const fetchTraces = async () =>{
      try{
-                const response = await fetch(`http://localhost:4000/api/projects/${projectId}/traces`,{
+                const response = await fetch(`${API_BASE}/projects/${projectId}/traces`,{
                     credentials : "include",
             headers : {
                "Content-Type" : "application/json",
