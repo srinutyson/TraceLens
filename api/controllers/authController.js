@@ -52,7 +52,7 @@ export const signupController  = async (req,res)=>{
                 const otpHash = await bcrypt.hash(otp,10);
 
                   const {error} = await resend.emails.send({
-                      from : "onboarding@resend.dev",
+                     from: process.env.RESEND_FROM_EMAIL,
                       to : [normalizedEmail],
                       subject : "TraceLens email Verification",
                       html : `
@@ -103,7 +103,7 @@ export const signupController  = async (req,res)=>{
            }
 
            const {error} = await resend.emails.send({
-              from : "onboarding@resend.dev",
+             from: process.env.RESEND_FROM_EMAIL,
               to : [normalizedEmail],
               subject : "TraceLens email Verification",
               html : `
@@ -398,7 +398,7 @@ export const forgotPassword = async (req, res) => {
         const otpHash = await bcrypt.hash(otp, 10);
 
         const { error } = await resend.emails.send({
-            from: "onboarding@resend.dev",
+            from: process.env.RESEND_FROM_EMAIL,
             to: [normalizedEmail],
             subject: "TraceLens Password Reset",
             html: `
